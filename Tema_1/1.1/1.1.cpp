@@ -10,7 +10,7 @@
 
 using namespace std;
 
-#include "bintree_eda.h";
+#include "TreeSet_AVL.h"
 
 /*@ <answer>
 
@@ -26,13 +26,25 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-void resuelveCaso() {
-	// leer los datos de la entrada
-	bintree<int> tree = leerArbol(0);	//Lee un árbol
+bool resuelveCaso() {
 
+	char tipo;
+	cin >> tipo;
+
+	if (!std::cin)  // fin de la entrada
+		return false;
+
+	//if (tipo == 'N') 
+	//	//TreeNode<char> tree = new TreeNode();
+	//	//bintree<char> tree = leerArbol('.');	//Lee un árbol numérico
+	//else if (tipo == 'P') 
+		//bintree<string> tree = leerArbol(string("."));	//Lee un árbol de palabras
+	
 	// resolver el caso posiblemente llamando a otras funciones
 
 	// escribir la solución
+
+	return true;
 }
 
 //@ </answer>
@@ -47,17 +59,13 @@ int main() {
 	auto cinbuf = std::cin.rdbuf(in.rdbuf());
 #endif
 
-	int numCasos;
-	std::cin >> numCasos;
-	for (int i = 0; i < numCasos; ++i)
-		resuelveCaso();
+	while (resuelveCaso());
 
-	// para dejar todo como estaba al principio y parar antes de salir
+	// para dejar todo como estaba al principio
 #ifndef DOMJUDGE
 	std::cin.rdbuf(cinbuf);
 	std::cout << "Pulsa Intro para salir..." << std::flush;
 	std::cin.get();
 #endif
-
 	return 0;
 }
