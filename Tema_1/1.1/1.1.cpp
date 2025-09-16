@@ -6,11 +6,9 @@
 
 #include <iostream>
 #include <fstream>
- //#include <...>
+#include "bintree.h";
 
 using namespace std;
-
-#include "TreeSet_AVL.h"
 
 /*@ <answer>
 
@@ -26,6 +24,30 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
+template <typename U>
+bool AVL(BinTree <U> tree, int& alt) {
+
+	//Caso base arbol vacío (Es una hoja)
+	if (tree.empty() || tree.left().empty() && tree.right().empty()) return true;
+
+	bool izq = true, der = true;
+	int altIzq = 1, altDer = 1;	//Para comprobar que está equilibrado
+	U min = tree.root(), max = tree.root();	//Para comprobar que está ordenado
+	
+	//En caso de que no sea vacío miramos si los hijos son AVL
+	if (!tree.left().empty()) {
+		altIzq++;
+		izq = AVL(tree.left(), altIzq);
+	}
+	if (!tree.right().empty()) {
+		altDer++;
+		der = AVL(tree.right(), altDer);
+	}
+	//Debemos incrementar alt
+	alt++;
+	return ((altIzq - altDer <= 1) && (altIzq - altDer >= -1)); //Se cumple la condicion de las alturas niveladas
+}
+
 bool resuelveCaso() {
 
 	char tipo;
@@ -34,15 +56,23 @@ bool resuelveCaso() {
 	if (!std::cin)  // fin de la entrada
 		return false;
 
-	//if (tipo == 'N') 
-	//	//TreeNode<char> tree = new TreeNode();
-	//	//bintree<char> tree = leerArbol('.');	//Lee un árbol numérico
-	//else if (tipo == 'P') 
-		//bintree<string> tree = leerArbol(string("."));	//Lee un árbol de palabras
-	
-	// resolver el caso posiblemente llamando a otras funciones
+	bool sol = false;
+	int alt = 0;
+
+	if (tipo == 'N') {
+		BinTree <int> tree = read_tree<int>(std::cin); //Lee un árbol numérico	
+		sol = AVL(tree, alt);
+ 	}
+	else if (tipo == 'P') {
+		BinTree <string> tree = read_tree<string>(std::cin); //Lee un árbol de palabras
+		sol = AVL(tree, alt);
+	}
 
 	// escribir la solución
+	if (sol) cout << "SI";
+	else cout << "NO";
+
+	cout << endl;
 
 	return true;
 }

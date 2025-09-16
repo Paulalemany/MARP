@@ -130,6 +130,7 @@
     <ClCompile Include="1.1.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="bintree.h" />
     <ClInclude Include="TreeSet_AVL.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
