@@ -25,27 +25,35 @@ using namespace std;
  //@ <answer>
 
 template <typename U>
-bool AVL(BinTree <U> tree, int& alt) {
+bool AVL(BinTree <U> tree, int& alt, U& min, U& max) {
 
 	//Caso base arbol vacío (Es una hoja)
-	if (tree.empty() || tree.left().empty() && tree.right().empty()) return true;
+	if (tree.empty()) return true; 
 
-	bool izq = true, der = true;
-	int altIzq = 1, altDer = 1;	//Para comprobar que está equilibrado
-	U min = tree.root(), max = tree.root();	//Para comprobar que está ordenado
+	int altIzq = 0, altDer = 0;	//Para comprobar que está equilibrado
+	U maxIzq = max, minDer = min;
+
+	if (min > tree.root()) min = tree.root();
+	if (max < tree.root()) max = tree.root();
+
+	if (tree.left().empty() && tree.right().empty()) 
+	{ 
+		return true; 
+	}
 	
 	//En caso de que no sea vacío miramos si los hijos son AVL
 	if (!tree.left().empty()) {
+		altIzq+= alt;
 		altIzq++;
-		izq = AVL(tree.left(), altIzq);
+		AVL(tree.left(), altIzq, min, maxIzq);
 	}
 	if (!tree.right().empty()) {
+		altDer += alt;
 		altDer++;
-		der = AVL(tree.right(), altDer);
+		AVL(tree.right(), altDer, minDer, max);
 	}
-	//Debemos incrementar alt
-	alt++;
-	return ((altIzq - altDer <= 1) && (altIzq - altDer >= -1)); //Se cumple la condicion de las alturas niveladas
+	return ((altIzq - altDer <= 1) && (altIzq - altDer >= -1) //Se cumple la condicion de las alturas niveladas
+		&&(minDer >= tree.root() && maxIzq <= tree.root())); //Condición de que está ordenado
 }
 
 bool resuelveCaso() {
@@ -61,11 +69,17 @@ bool resuelveCaso() {
 
 	if (tipo == 'N') {
 		BinTree <int> tree = read_tree<int>(std::cin); //Lee un árbol numérico	
-		sol = AVL(tree, alt);
+		int min, max;
+		if (tree.empty()) min = 0, max = 0;
+		else min = tree.root(), max = tree.root();	//Para comprobar que está ordenado
+		sol = AVL(tree, alt, min, max);
  	}
 	else if (tipo == 'P') {
 		BinTree <string> tree = read_tree<string>(std::cin); //Lee un árbol de palabras
-		sol = AVL(tree, alt);
+		string min, max;
+		if (tree.empty()) min = "", max = "";
+		else string min = tree.root(), max = tree.root();	//Para comprobar que está ordenado
+		sol = AVL(tree, alt, min, max);
 	}
 
 	// escribir la solución
