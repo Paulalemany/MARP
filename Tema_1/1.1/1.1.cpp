@@ -31,10 +31,10 @@ bool AVL(BinTree <U> tree, int& alt, U& min, U& max) {
 	if (tree.empty()) return true; 
 
 	int altIzq = 0, altDer = 0;	//Para comprobar que está equilibrado
-	U maxIzq = max, minDer = min;
+	U maxIzq = tree.root(), minIzq = tree.root();
+	U maxDer = tree.root(), minDer = tree.root();
 
-	if (min > tree.root()) min = tree.root();
-	if (max < tree.root()) max = tree.root();
+	min = max = tree.root();
 
 	if (tree.left().empty() && tree.right().empty()) 
 	{
@@ -44,10 +44,14 @@ bool AVL(BinTree <U> tree, int& alt, U& min, U& max) {
 	
 	//En caso de que no sea vacío miramos si los hijos son AVL
 	if (!tree.left().empty()) {
-		if(!AVL(tree.left(), altIzq, min, maxIzq)) return false;
+		if(!AVL(tree.left(), altIzq, minIzq, maxIzq)) return false;
+		if (maxIzq >= tree.root()) return false; // debe ser estrictamente menor
+		min = minIzq;
 	}
 	if (!tree.right().empty()) {
-		if(!AVL(tree.right(), altDer, minDer, max)) return false;
+		if(!AVL(tree.right(), altDer, minDer, maxDer)) return false;
+		if (minDer <= tree.root()) return false; // debe ser estrictamente mayor
+		max = maxDer;
 	}
 
 	//Para recuperar el nivel en el que estámos
