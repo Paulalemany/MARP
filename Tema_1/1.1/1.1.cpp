@@ -37,21 +37,24 @@ bool AVL(BinTree <U> tree, int& alt, U& min, U& max) {
 	if (max < tree.root()) max = tree.root();
 
 	if (tree.left().empty() && tree.right().empty()) 
-	{ 
-		return true; 
+	{
+		alt++;
+		return true;
 	}
 	
 	//En caso de que no sea vacío miramos si los hijos son AVL
 	if (!tree.left().empty()) {
-		altIzq+= alt;
-		altIzq++;
-		AVL(tree.left(), altIzq, min, maxIzq);
+		if(!AVL(tree.left(), altIzq, min, maxIzq)) return false;
 	}
 	if (!tree.right().empty()) {
-		altDer += alt;
-		altDer++;
-		AVL(tree.right(), altDer, minDer, max);
+		if(!AVL(tree.right(), altDer, minDer, max)) return false;
 	}
+
+	//Para recuperar el nivel en el que estámos
+	if (altDer > altIzq) alt = altDer;
+	else alt = altIzq;
+	alt++;
+
 	return ((altIzq - altDer <= 1) && (altIzq - altDer >= -1) //Se cumple la condicion de las alturas niveladas
 		&&(minDer >= tree.root() && maxIzq <= tree.root())); //Condición de que está ordenado
 }
