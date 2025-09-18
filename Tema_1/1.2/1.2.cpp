@@ -51,12 +51,13 @@ bool resuelveCaso() {
 
 	// escribir la solución
 	for (int i = 0; i < M; i++) {
-		if (pos.size() == 0) cout << "??'/n'";
+		if (pos[i] == 0) cout << "??\n";
 		else {
-			cout << pos.front() << '/n';
-			pos.erase(pos.begin());
+			cout << pos[i] << '\n';
 		}
 	}
+
+	cout << "---\n";
 
 	return true;
 }
