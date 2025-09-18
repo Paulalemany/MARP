@@ -92,11 +92,11 @@ public:
 
    T const& kesimo(int k) const {
        
-       //Acordarse de los árboles vacíos y de que k sea igual 
-       // al numero de elementos
+       //El arbol no puede ser vacio porque si N = 0 deja de leerse el archivo
+       // de que k sea igual al numero de elementos
        const_iterator act(raiz);
 
-       if (act == nullptr || k > size()) return NULL; 
+       if (k > size()) return NULL; 
        //Si el arbol es vacio o se sale delarbol
 
        for (int i = 1; i < k; i++) ++act;
