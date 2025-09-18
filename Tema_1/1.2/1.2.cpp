@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 using namespace std;
 
 #include "TreeSet_AVL.h"  // propios o los de las estructuras de datos de clase
@@ -27,14 +28,35 @@ using namespace std;
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int N;
+	int N, M;
 	cin >> N;
 	if (N == 0)
 		return false;
 
 	// resolver el caso posiblemente llamando a otras funciones
+	//Creamos el árbol
+	int elem;
+	Set <int> arbol;
+	for (int i = 0; i < N; i++) {
+		cin >> elem;
+		arbol.insert(elem);
+	}
+
+	cin >> M;
+	vector <int> pos;
+	for (int i = 0; i < M; i++) {
+		cin >> elem;
+		pos.push_back(arbol.kesimo(elem));
+	}
 
 	// escribir la solución
+	for (int i = 0; i < M; i++) {
+		if (pos.size() == 0) cout << "??'/n'";
+		else {
+			cout << pos.front() << '/n';
+			pos.erase(pos.begin());
+		}
+	}
 
 	return true;
 }

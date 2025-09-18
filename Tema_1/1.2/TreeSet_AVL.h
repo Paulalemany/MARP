@@ -90,6 +90,10 @@ public:
       return borra(e, raiz);
    }
 
+   T const& kesimo(int k) const {
+
+   }
+
 protected:
 
    void copia(Set const& other) {
