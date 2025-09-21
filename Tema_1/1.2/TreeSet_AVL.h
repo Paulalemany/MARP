@@ -33,10 +33,10 @@ protected:
    struct TreeNode {
       T elem;
       Link iz, dr;
-      int tam_i = 0;
+      int tam_i;
       int altura;
       TreeNode(T const& e, Link i = nullptr, Link d = nullptr,
-               int alt = 1) : elem(e), iz(i), dr(d), altura(alt) {}
+               int alt = 1) : elem(e), iz(i), dr(d), altura(alt), tam_i(1) {}
    };
 
    // puntero a la raíz de la estructura jerárquica de nodos
@@ -149,7 +149,6 @@ protected:
          a = new TreeNode(e);
          ++nelems;
          crece = true;
-         a->tam_i++;
       } else if (menor(e, a->elem)) {   
          crece = inserta(e, a->iz); //Inserta en el hijo izquierdo
           
@@ -183,6 +182,7 @@ protected:
 
    void rotaDer(Link & r2) {
       Link r1 = r2->iz;
+      r2->tam_i -= r1->tam_i;   //Al hacer la rotación se resta el tam de los que tenia por debajo
       r2->iz = r1->dr;
       r1->dr = r2;
       r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;
@@ -192,22 +192,23 @@ protected:
 
    void rotaIzq(Link & r1) {
       Link r2 = r1->dr;
+
+      r2->tam_i += r1->tam_i;   //Al hacer la rotación se suma el tam del que se queda por debajo
       r1->dr = r2->iz;
       r2->iz = r1;
       r1->altura = std::max(altura(r1->iz), altura(r1->dr)) + 1;
       r2->altura = std::max(altura(r2->iz), altura(r2->dr)) + 1;
+
       r1 = r2;
+       
    }
 
    void rotaIzqDer(Link & r3) {
       rotaIzq(r3->iz);
-      r3->iz->tam_i = r3->iz->tam_i + r3->iz->iz->tam_i;
       rotaDer(r3);
    }
 
    void rotaDerIzq(Link & r1) {
-       //El Tam_i del elemento a la derecha antes de rotar pierde sus hijos
-       r1->dr->tam_i = r1->dr->tam_i - r1->dr->iz->tam_i;
       rotaDer(r1->dr);
       rotaIzq(r1);
    }
@@ -218,7 +219,6 @@ protected:
               rotaDerIzq(a);
            
          else rotaIzq(a);
-         a->tam_i++;
       }
       else a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;
    }
@@ -226,15 +226,10 @@ protected:
    void reequilibraDer(Link & a) {
       if (altura(a->iz) - altura(a->dr) > 1) {
           
-          if (altura(a->iz->dr) > altura(a->iz->iz)) {
+          if (altura(a->iz->dr) > altura(a->iz->iz))
               rotaIzqDer(a);
-              a->dr->tam_i = a->dr->tam_i - a->tam_i;
-          }
             
-         else {
-             a->tam_i = a->tam_i - a->iz->tam_i;   //Al reequilibrarlo le quitamos los hijos que antes tenia
-             rotaDer(a);
-         }
+         else rotaDer(a);
       }
       else a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;
    }
