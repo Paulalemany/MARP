@@ -46,7 +46,7 @@ bool resuelveCaso() {
 	vector <int> pos;
 	for (int i = 0; i < M; i++) {
 		cin >> elem;
-		pos.push_back(arbol.kesimo(elem));
+		pos.push_back(arbol.kesimo(elem, nullptr));
 	}
 
 	// escribir la solución

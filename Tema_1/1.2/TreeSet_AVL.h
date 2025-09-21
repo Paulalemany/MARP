@@ -91,20 +91,8 @@ public:
       return borra(e, raiz);
    }
 
-   T const& kesimo(int k) const {
-       
-       //El arbol no puede ser vacio porque si N = 0 deja de leerse el archivo
-       // de que k sea igual al numero de elementos
-       const_iterator act(raiz);
-
-       if (k > size()) return NULL; 
-       //Si el arbol es vacio o se sale delarbol
-
-       for (int i = 1; i < k; i++) ++act;
-
-       if (act == nullptr) return NULL;
-       else return *act;
-       
+   T const& kesimo(int k, Link act) const {
+       return kes(k, raiz);
    }
 
 protected:
@@ -164,20 +152,31 @@ protected:
       return crece;
    }
 
+   T const& kes(int k, Link act) {
+       if (act == nullptr) act = raiz;
+
+       //El arbol no puede ser vacio porque si N = 0 deja de leerse el archivo
+       if (k > size()) return NULL; // comprobamos que k esté dentro del conjunto
+
+       //Comparamos si el número que buscamos es mayor o menor para saber si vamos a la derecha o a la izquierda
+       if (k < act->tam_i) {    //Vamos a la izquierda
+           kes(k, act->iz);
+       }
+       else {   //Vamos a la derecha
+           kes(k, act->dr);
+       }
+
+       //for (int i = 1; i < k; i++) ++act;
+
+       /*if (act == nullptr) return NULL;
+       else return *act;*/
+
+       return NULL;
+   }
+
    int altura(Link a) {
       if (a == nullptr) return 0;
       else return a->altura;
-   }
-
-   int tam(Link a) {
-       if (a == nullptr) return 0;
-       else return a->tam_i;
-   }
-
-   void actualizar(Link a) {
-       if (a == nullptr) return;
-       a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;
-       a->tam_i = tam(a->iz) + 1; // nº de nodos a la izquierda + 1 (él mismo)
    }
 
    void rotaDer(Link & r2) {
