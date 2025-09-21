@@ -33,6 +33,7 @@ protected:
    struct TreeNode {
       T elem;
       Link iz, dr;
+      int tam_i = 0;
       int altura;
       TreeNode(T const& e, Link i = nullptr, Link d = nullptr,
                int alt = 1) : elem(e), iz(i), dr(d), altura(alt) {}
@@ -148,12 +149,17 @@ protected:
          a = new TreeNode(e);
          ++nelems;
          crece = true;
-      } else if (menor(e, a->elem)) {
-         crece = inserta(e, a->iz);
-         if (crece) reequilibraDer(a);
+         a->tam_i++;
+      } else if (menor(e, a->elem)) {   
+         crece = inserta(e, a->iz); //Inserta en el hijo izquierdo
+          
+         if (crece) {
+             a->tam_i++;    //incrementamos el número de hijos izquierdos que tiene
+             reequilibraDer(a);
+         }
       } else if (menor(a->elem, e)) {
          crece = inserta(e, a->dr);
-         if (crece) reequilibraIzq(a);
+         if (crece) reequilibraIzq(a);  //Puede intervenir en cuantos hijos tiene por debajo
       } else // el elemento e ya está en el árbol
          crece = false;
       return crece;
@@ -162,6 +168,17 @@ protected:
    int altura(Link a) {
       if (a == nullptr) return 0;
       else return a->altura;
+   }
+
+   int tam(Link a) {
+       if (a == nullptr) return 0;
+       else return a->tam_i;
+   }
+
+   void actualizar(Link a) {
+       if (a == nullptr) return;
+       a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;
+       a->tam_i = tam(a->iz) + 1; // nº de nodos a la izquierda + 1 (él mismo)
    }
 
    void rotaDer(Link & r2) {
@@ -184,28 +201,40 @@ protected:
 
    void rotaIzqDer(Link & r3) {
       rotaIzq(r3->iz);
+      r3->iz->tam_i = r3->iz->tam_i + r3->iz->iz->tam_i;
       rotaDer(r3);
    }
 
    void rotaDerIzq(Link & r1) {
+       //El Tam_i del elemento a la derecha antes de rotar pierde sus hijos
+       r1->dr->tam_i = r1->dr->tam_i - r1->dr->iz->tam_i;
       rotaDer(r1->dr);
       rotaIzq(r1);
    }
 
    void reequilibraIzq(Link & a) {
       if (altura(a->dr) - altura(a->iz) > 1) {
-         if (altura(a->dr->iz) > altura(a->dr->dr))
-            rotaDerIzq(a);
+          if (altura(a->dr->iz) > altura(a->dr->dr))
+              rotaDerIzq(a);
+           
          else rotaIzq(a);
+         a->tam_i++;
       }
       else a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;
    }
 
    void reequilibraDer(Link & a) {
       if (altura(a->iz) - altura(a->dr) > 1) {
-         if (altura(a->iz->dr) > altura(a->iz->iz))
-            rotaIzqDer(a);
-         else rotaDer(a);
+          
+          if (altura(a->iz->dr) > altura(a->iz->iz)) {
+              rotaIzqDer(a);
+              a->dr->tam_i = a->dr->tam_i - a->tam_i;
+          }
+            
+         else {
+             a->tam_i = a->tam_i - a->iz->tam_i;   //Al reequilibrarlo le quitamos los hijos que antes tenia
+             rotaDer(a);
+         }
       }
       else a->altura = std::max(altura(a->iz), altura(a->dr)) + 1;
    }
