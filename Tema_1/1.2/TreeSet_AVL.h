@@ -91,7 +91,7 @@ public:
       return borra(e, raiz);
    }
 
-   T const& kesimo(int k, Link act) const {
+   T const& kesimo(int k) const {
        return kes(k, raiz);
    }
 
@@ -152,26 +152,19 @@ protected:
       return crece;
    }
 
-   T const& kes(int k, Link act) {
-       if (act == nullptr) act = raiz;
-
+   T const& kes(int k, Link act) const {
        //El arbol no puede ser vacio porque si N = 0 deja de leerse el archivo
-       if (k > size()) return NULL; // comprobamos que k esté dentro del conjunto
+       if (k > size()) throw std::out_of_range("k fuera de rango"); // comprobamos que k esté dentro del conjunto
+
+       if (act->tam_i == k) return act->elem;  //Si estamos en el numero que buscamos lo devolvemos
 
        //Comparamos si el número que buscamos es mayor o menor para saber si vamos a la derecha o a la izquierda
-       if (k < act->tam_i) {    //Vamos a la izquierda
-           kes(k, act->iz);
+       else if (k < act->tam_i) {    //Vamos a la izquierda
+           return kes(k, act->iz);
        }
        else {   //Vamos a la derecha
-           kes(k, act->dr);
+           return kes(k - act->tam_i, act->dr); //Como vamos a la derecha le restamos a K los que nos saltamos de la izq
        }
-
-       //for (int i = 1; i < k; i++) ++act;
-
-       /*if (act == nullptr) return NULL;
-       else return *act;*/
-
-       return NULL;
    }
 
    int altura(Link a) {

@@ -46,14 +46,12 @@ bool resuelveCaso() {
 	vector <int> pos;
 	for (int i = 0; i < M; i++) {
 		cin >> elem;
-		pos.push_back(arbol.kesimo(elem, nullptr));
-	}
-
-	// escribir la solución
-	for (int i = 0; i < M; i++) {
-		if (pos[i] == 0) cout << "??\n";
-		else {
-			cout << pos[i] << '\n';
+		try {
+			
+			cout << arbol.kesimo(elem) << '\n';
+		}
+		catch (std::out_of_range const&) {
+			std::cout << "??\n";
 		}
 	}
 
