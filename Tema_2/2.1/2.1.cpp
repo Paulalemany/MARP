@@ -9,13 +9,17 @@
 #include <fstream>
 using namespace std;
 
-//#include "..."  // propios o los de las estructuras de datos de clase
+#include "PriorityQueue.h"
 
 /*@ <answer>
 
- Escribe aquí un comentario general sobre la solución, explicando cómo
- se resuelve el problema y cuál es el coste de la solución, en función
- del tamaño del problema.
+ Para la solución utilizamos una cola de prioridad de mínimos porque
+ al sumar los valores más pequeños de los datos obtenemos el esfuerzo menor
+ consiguiendo asi de forma sencilla el resultado. 
+ Además guardamos la suma del esfuerzo en una variable para devolverla al final de forma eficiente
+
+ La complejidad de este método sería de O(n log n) debido a que es la complejidad más alta que hay en el método
+ (Por los pop de la cola)
 
  @ </answer> */
 
@@ -25,15 +29,41 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
+long long sumaMinEsf(PriorityQueue<long long> cola) {
+
+	long long a, b;
+	long long sum = 0;
+
+	while (cola.size() > 1) {
+		//Cargamos los datos que vamos a sumar
+		a = cola.top(); cola.pop();
+		b = cola.top(); cola.pop();
+
+		//Guardamos el resultado de la suma
+		sum += a + b;
+		cola.push(a + b);
+	}
+
+	return sum;
+	
+}
+
 bool resuelveCaso() {
 	// leer los datos de la entrada
+	int N;
+	cin >> N;
 
-	//if (caso especial)
-		//return false;
+	if (N == 0)
+		return false;
 
-	// resolver el caso posiblemente llamando a otras funciones
+	long long dato;
+	PriorityQueue<long long> cola;
+	for (int i = 0; i < N; i++) {
+		cin >> dato;
+		cola.push(dato);
+	}
 
-	// escribir la solución
+	cout << sumaMinEsf(cola) << '\n';
 
 	return true;
 }
