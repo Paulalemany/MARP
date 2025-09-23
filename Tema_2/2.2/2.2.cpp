@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <fstream>
+#include <vector>
 using namespace std;
 
 #include "PriorityQueue.h"  // propios o los de las estructuras de datos de clase
@@ -25,10 +26,20 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
+
 struct usuario {
-	int id = 0;
-	int per = 0;
+	int id = 0;		//Identificador del usuario
+	int per = 0;	//Intervalo de tiempo que quiere las noticias
+	int mom = 0;	//Tiempo que falta para mandarles actualización
+
+	//El mom se irá actualizando en cada it restandole el transcurrido (per) pera saber cuanto le queda a cada 1)
 };
+
+bool operator<(const usuario& a, const usuario& b) {
+		return a.mom < b.mom ||
+			((a.mom == b.mom) && (a.id < b.id)) ;
+}
+
 
 bool resuelveCaso() {
 
@@ -47,14 +58,28 @@ bool resuelveCaso() {
 
 		cin >> idnt >> p;
 		user.id = idnt;
-		user.per = p;
+		user.per = user.mom = p;
 
 		cola.push(user);
 	}
 
-	// resolver el caso posiblemente llamando a otras funciones
+	int M;	//Numero de posiciones que tenemos que decir
 
-	// escribir la solución
+	cin >> M;
+	
+	for (int i = 0; i < M; i++) {
+
+		cout << cola.top().id << '\n';	//Escribimos el prioritario
+
+		user = cola.top(); 
+		cola.pop();
+
+		user.mom += user.per;	//Usamos el tiempo absoluto
+
+		cola.push(user);	
+	}
+
+	cout << "---\n";
 
 	return true;
 }
