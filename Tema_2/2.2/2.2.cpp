@@ -25,14 +25,32 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-bool resuelveCaso() {
-	// leer los datos de la entrada
+struct usuario {
+	int id = 0;
+	int per = 0;
+};
 
+bool resuelveCaso() {
+
+	// leer los datos de la entrada
 	int N;
 	cin >> N;
 
 	if (N == 0)
 		return false;
+
+	int idnt, p;
+	usuario user;
+	PriorityQueue<usuario> cola;
+
+	for (int i = 0; i < N; i++) {
+
+		cin >> idnt >> p;
+		user.id = idnt;
+		user.per = p;
+
+		cola.push(user);
+	}
 
 	// resolver el caso posiblemente llamando a otras funciones
 
