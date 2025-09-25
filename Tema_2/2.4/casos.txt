@@ -1,0 +1,16 @@
+4 
+I Luis 1000 
+I Eva 2000A 
+A 
+10 
+I Alberto 4000 
+I Pepe 3000 
+A 
+I Rosa 2000 
+I Laura 5000 
+A 
+I Sara 3000 
+A 
+A 
+A
+0
