@@ -1,14 +1,15 @@
 
 /*@ <authors>
  *
- * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la solución.
+ * Paula, Alemany Rodríguez (MARP01)
  *
  *@ </authors> */
 
 #include <iostream>
 #include <fstream>
+#include <stack>
 #include <vector>
-#include <queue>
+
 using namespace std;
 
 #include "PriorityQueue.h"  // propios o los de las estructuras de datos de clase
@@ -26,61 +27,66 @@ using namespace std;
  // Escribe el código completo de tu solución aquí debajo
  // ================================================================
  //@ <answer>
-
-
-struct paciente {
-	string nombre = "";		//Nombre del paciente
-	int gravedad = 0;		//Gravedad del caso
-	int espera = 0;			//Tiempo que lleva esperando
+struct elem {
+	int num;
+	int pila;
 };
 
-bool operator<(const paciente& a, const paciente& b) {
+bool operator<(const elem& a, const elem& b) {
 
-	if (a.gravedad == b.gravedad) return a.espera < b.espera;
-	else return a.gravedad > b.gravedad;
+	return a.num < b.num;
 }
 
-
 bool resuelveCaso() {
-
 	// leer los datos de la entrada
-	int N;
+	int N, K, dato, min = 0;
+	vector<stack<elem>> pilas;
+	PriorityQueue<elem> mejores;
+
 	cin >> N;
 
-	if (N == 0)
-		return false;
-	char Action;
-	PriorityQueue<paciente> cola;
-	paciente paciente;
-	string nombre;
-	int prioridad;
-	int cont = 0;
-	
 	for (int i = 0; i < N; i++) {
-		cin >> Action;	//Leemos la acción a proceder
+		stack<elem> pila;
+		cin >> K;
 
-		if (Action == 'A') {	//Toca atender a un paciente
-
-			cont++;
-			cout << cola.top().nombre << '\n';
-			cola.pop();
+		for (int j = 0; j < K; j++) {
+			cin >> dato;
+			if (dato < min || min == 0) min = dato;
+			pila.push({ dato, i });
 		}
-		else if (Action == 'I') {	//Llega nuevo ingreso
-			cin >> nombre >> prioridad;
-
-			paciente.nombre = nombre;
-			paciente.gravedad = prioridad;
-			paciente.espera = cont;
-			cont++;
-
-			cola.push(paciente);
-		}
-		else throw("Acción no contemplada");
+		pilas.push_back(pila);
 	}
-	
-	cout << "---\n";
+
+	if (!std::cin)  // fin de la entrada
+		return false;
+
+	// resolver el caso posiblemente llamando a otras funciones
+
+	//Guardamos el primer elemento de cada stack en la cola
+	for (int i = 0; i < N; i++) {
+		mejores.push(pilas[i].top());
+		//Eliminamos el elemento
+		pilas[i].pop();
+	}
+
+	int cont = 1;	//Para ver cuando se saca el bueno
+	int pila;
+
+	while (mejores.top().num != min) {
+
+		//Eliminamos el de la cima y volvemos a guardar la pila con el resto
+		pila = mejores.top().pila;
+		mejores.pop();
+		if (!pilas[pila].empty()) {	//Si se termina una pila ya no añadimos más de ahí
+			mejores.push(pilas[pila].top());
+			pilas[pila].pop();
+		}
+		cont++;
+	}
 
 
+	// escribir la solución
+	cout << cont << '\n';
 
 	return true;
 }
