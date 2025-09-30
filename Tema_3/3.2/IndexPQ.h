@@ -66,8 +66,9 @@ public:
 
    void update(U e, T const& p) {
 
-      if (posiciones.count(e)) push(e, p); // el elemento e se inserta por primera vez
+      if (!posiciones.count(e)) push(e, p); // el elemento e se inserta por primera vez
       else {
+         int i = posiciones.at(e);
          array[i].prioridad = p;
          if (i != 1 && antes(array[i].prioridad, array[i/2].prioridad))
             flotar(i);
@@ -108,10 +109,10 @@ public:
 
    T const& priority(U e) const {
 
-      if (posiciones.count(e))
+      if (!posiciones.count(e))
           throw std::domain_error("No se puede consultar la prioridad de un elemento que no ha sido insertado aún.");
-    
-      return array[i].prioridad;
+      
+      return array[posiciones.at(e)].prioridad;
    }
 
 private:

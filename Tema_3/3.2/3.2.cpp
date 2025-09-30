@@ -7,9 +7,18 @@
 
 #include <iostream>
 #include <fstream>
+
 using namespace std;
 
 #include "IndexPQ.h"  // propios o los de las estructuras de datos de clase
+
+/*@ <answer>
+
+ Escribe aquí un comentario general sobre la solución, explicando cómo
+ se resuelve el problema y cuál es el coste de la solución, en función
+ del tamaño del problema.
+
+ @ </answer> */
 
 
  // ================================================================
@@ -19,13 +28,38 @@ using namespace std;
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
+	int N;
+	cin >> N;
 
-	if (caso especial)
+	if (!std::cin)  // fin de la entrada
 		return false;
 
-	// resolver el caso posiblemente llamando a otras funciones
+	string datos;
+	int p;
+	IndexPQ <string, int, greater<int>> podio;
 
-	// escribir la solución
+	for (int i = 0; i < N; i++) {
+		cin >> datos;
+
+		if (datos == "?") {	//Consultar al ganador
+
+			if (!podio.empty())
+				cout << podio.top().elem << " " << podio.top().prioridad << '\n';
+		}
+		else {	//Dar puntos a x pais
+			cin >> p;
+			//Queremos sumar los puntos
+			try { p += podio.priority(datos); }	//Queremos sumarle los puntos que ya tiene
+			catch (domain_error & e){ }
+			
+			try { podio.update(datos, p); }	//Actualizamos la prioridad
+			catch (invalid_argument & e){}
+			
+		}
+	}
+
+	cout << "---\n";
+	
 
 	return true;
 }
