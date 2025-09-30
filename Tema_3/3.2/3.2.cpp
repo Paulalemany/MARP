@@ -26,6 +26,17 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
+struct puesto {
+	int puntos;
+	string nombre;
+};
+
+bool operator<(const puesto& a, const puesto& b) {
+
+	if (a.puntos == b.puntos) return a.nombre < b.nombre;
+	else return a.puntos > b.puntos;
+}
+
 bool resuelveCaso() {
 	// leer los datos de la entrada
 	int N;
@@ -36,7 +47,7 @@ bool resuelveCaso() {
 
 	string datos;
 	int p;
-	IndexPQ <string, int, greater<int>> podio;
+	IndexPQ <string, puesto> podio;
 
 	for (int i = 0; i < N; i++) {
 		cin >> datos;
@@ -44,15 +55,15 @@ bool resuelveCaso() {
 		if (datos == "?") {	//Consultar al ganador
 
 			if (!podio.empty())
-				cout << podio.top().elem << " " << podio.top().prioridad << '\n';
+				cout << podio.top().elem << " " << podio.top().prioridad.puntos << '\n';
 		}
 		else {	//Dar puntos a x pais
 			cin >> p;
 			//Queremos sumar los puntos
-			try { p += podio.priority(datos); }	//Queremos sumarle los puntos que ya tiene
+			try { p += podio.priority(datos).puntos; }	//Queremos sumarle los puntos que ya tiene
 			catch (domain_error & e){ }
 			
-			try { podio.update(datos, p); }	//Actualizamos la prioridad
+			try { podio.update(datos, { p, datos }); }	//Actualizamos la prioridad
 			catch (invalid_argument & e){}
 			
 		}
