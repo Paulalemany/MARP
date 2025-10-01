@@ -12,14 +12,6 @@ using namespace std;
 
 #include "PriorityQueue.h"  // propios o los de las estructuras de datos de clase
 
-/*@ <answer>
-
- Escribe aquí un comentario general sobre la solución, explicando cómo
- se resuelve el problema y cuál es el coste de la solución, en función
- del tamaño del problema.
-
- @ </answer> */
-
 
  // ================================================================
  // Escribe el código completo de tu solución aquí debajo
@@ -66,12 +58,15 @@ bool resuelveCaso() {
 		tareas.pop();
 
 		//Vemos si hay superposicion
-		superposicion = tareas.top().t < enCurso.t + enCurso.inter;
+		//Hay superoposición solo si el inicio 
+		// de la siguiente es estrictamente menor que el final de la actual
+		superposicion = tareas.top().t < enCurso.t + enCurso.inter;	
 
 		if (!superposicion && enCurso.p > 0) {	//Si no hay superposición y es periodica volvemos a insertar
 			
 			enCurso.t += enCurso.p;	//Calculamos cuando le vuelve a tocar
-			if (enCurso.t + enCurso.inter < T) tareas.push(enCurso);	//Si seguimos dentro del tiempo a comprobar la añadimos
+			//Con que comiencen antes de T ya las tenemos en cuenta
+			if (enCurso.t < T) tareas.push(enCurso);	//Si seguimos dentro del tiempo a comprobar la añadimos
 		}
 	}
 
