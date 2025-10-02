@@ -57,7 +57,7 @@ public:
    void push(U e, T const& p) {
 
        
-      if (!posiciones.count(e))
+      if (posiciones.count(e))
          throw std::invalid_argument("No se pueden insertar elementos repetidos.");
       else {
          array.push_back({e, p});
