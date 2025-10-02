@@ -42,12 +42,14 @@ bool resuelveCaso() {
 
 	for (int i = 0; i < N; i++) {
 		cin >> cAux >> fAux;
-		tareas.push({ fAux - cAux, 0, cAux});	//Metemos la tarea a la cola de prioridad
+		//Metemos la tarea a la cola de prioridad solo si empieza dentro del periodo
+		if (cAux < T) tareas.push({ fAux - cAux, 0, cAux});	//Metemos la tarea a la cola de prioridad
 	}
 
 	for (int i = 0; i < M; i++) {
 		cin >> cAux >> fAux >> pAux;
-		tareas.push({ fAux - cAux, pAux, cAux});	//Metemos la tarea a la cola de prioridad
+		//Metemos la tarea a la cola de prioridad solo si empieza dentro del periodo
+		if (cAux < T) tareas.push({ fAux - cAux, pAux, cAux});
 	}
 
 	bool superposicion = false;
