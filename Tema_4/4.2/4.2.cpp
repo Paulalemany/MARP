@@ -8,7 +8,6 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include <deque>
 
 using namespace std;
 
@@ -31,72 +30,61 @@ using namespace std;
 class Bipartito {
 private:
 
-	vector<bool> visit;	//Vector de nodos visitados
+	vector<pair<bool,int>> visit;	//Vector de nodos visitados (Guarda el "color" del nodo (1/-1 el 0 es no visitado)
 	vector<int> ant;	//guarda el último vértice antes de llegar a v
 	int s;				//vértice de origen
-	bool ciclo = false;
-
-	using Camino = std::deque<int>;
+	int col = -1;		//Color del vértice
+	bool bipartito = true;
 
 public:
 
-	Bipartito(Grafo const& g, int s) : visit(g.V(), false),
+	Bipartito(Grafo const& g, int s) : visit(g.V(), {false, 0}),
 		ant(g.V()), s(s) {
 
+		//100% tiene una componente conexa
+		dfs(g, s, col);
+		int con = 0;
+		conexo(g, con);
+
+		while (con < g.V() && bipartito) {
+			dfs(g, con, col);
+			conexo(g, con);
+		}
+
 		//Tenemos que comprobar que no haya ningún camino cíclico
-		if (conexo(g) && !ciclo) cout << "SI\n";
+		if (bipartito) cout << "SI\n";
 		else cout << "NO\n";
 
 	}
 
 	//Comprobamos si el grafo es conexo
-	void dfs(Grafo const& g, int v) {	//Recorrido en profundidad
-		visit[v] = true;
+	void dfs(Grafo const& g, int v, int c) {	//Recorrido en profundidad
+		visit[v].first = true;
+		visit[v].second = c;
+		
+		c *= -1;	//Cambiamos el tono
 
 		//Recorremos los adyacentes del nodo
 		for (int w : g.ady(v)) {	//Hacerlo así le da a w el valor de la componente en el vector y no su indice
-			if (!visit[w]) {	//Si no hemos visitado el nodo
+			if (!visit[w].first) {	//Si no hemos visitado el nodo
 				ant[w] = v;
-				dfs(g, w);	//Vemos los adyacentes a ese nuevo nodo
+				dfs(g, w, c);	//Vemos los adyacentes a ese nuevo nodo
 			}
-			else if (ant[v] != w && w != s){	//Hemos encontrado un ciclo
-				//Si volvemos a un nodo ya visitado y no es su padre directo
-				//(Es decir no acabamos de venir de ahí) hay un ciclo
-				ciclo = true;
+			else {	//Si se ha visitado comprobar que tienen el color correcto
+				bipartito = visit[w].second == c;
 			}
+			if (!bipartito) return;
 		}
 
 	}
 
-	bool conexo(Grafo const& g) {
-
-		dfs(g, s);
-
-		int i = 0;
+	bool conexo(Grafo const& g, int& i) {
 		while (i < visit.size()) {
 
-			if (visit[i] == false) return false;
+			if (visit[i].first == false) return false;
 			i++;
 		}
 		return true;	//Si llega al final del bucle es que se han visitado todos en una sola búsqueda
-	}
-
-	bool hayCamino(int v) const {
-		return visit[v];	//Si se ha visitado es que hay un camino a el
-	}
-
-	Camino camino(int v) const {
-
-		//devuelve el camino desde el origen a v
-		if (!hayCamino(v))
-			throw std::domain_error("No existe camino");
-		Camino cam;
-
-		//recuperamos el recorrido hecho
-		for (int x = v; x != s; x = ant[x]) 
-			cam.push_front(x);
-		cam.push_front(s);
-		return cam;
 	}
 };
 
@@ -117,12 +105,7 @@ bool resuelveCaso() {
 		grafo.ponArista(ini, fin);
 	}
 
-	Bipartito al(grafo, 0);	//Que empiece en el primer nodo (Tener cuidado con los grafos vacíos
-
-	//Escribimos la solución
-	//Si con esa llamada se han visitado todos los nodos es que es un árbol libre
-	/*if (al.sol()) cout << "SI\n";
-	else cout << "NO\n";*/
+	Bipartito al(grafo, 0);
 
 	return true;
 }
