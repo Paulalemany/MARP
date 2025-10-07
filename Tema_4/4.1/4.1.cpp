@@ -14,15 +14,6 @@ using namespace std;
 
 #include "Grafo.h"
 
-/*@ <answer>
-
- Escribe aquí un comentario general sobre la solución, explicando cómo
- se resuelve el problema y cuál es el coste de la solución, en función
- del tamaño del problema.
-
- @ </answer> */
-
-
  // ================================================================
  // Escribe el código completo de tu solución aquí debajo
  // ================================================================
