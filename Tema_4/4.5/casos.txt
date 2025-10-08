@@ -1,0 +1,15 @@
+6 
+AlgunosHombresBuenos 4 TomCruise JackNicholson DemiMoore KevinBacon RainMan 
+3 DustinHoffman TomCruise ValeriaGolino 
+Apolo13 4 TomHanks KevinBacon EdHarris KathleenQuinlan 
+MejorImposible 4 JackNicholson HelenHunt GregKinnear CubaGoodingJr 
+LoQueLaNocheEsconde 4 TyeSheridan AnaDeArmas JohnLeguizamo HelenHunt 
+ExperimentoIndie 3 SarahDavis JohnDoe MichaelAnderson 
+7 
+TomCruise 
+DustinHoffman 
+TomHanks 
+HelenHunt 
+AnaDeArmas 
+KevinBacon 
+JohnDoe
