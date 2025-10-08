@@ -28,10 +28,10 @@ using namespace std;
 
 class Amigos {
 private:
-	vector<bool> visit;	//Vector de nodos visitados
-	vector<int> ant;	//guarda el último vértice antes de llegar a v
-	int s;				//vértice de origen
-	int conexa = 0;			//Nos guardamos cuantos elementos tiene la mayor componente conexa
+	vector<bool> visit;				//Vector de nodos visitados
+	vector<int> ant;				//guarda el último vértice antes de llegar a v
+	int s;							//vértice de origen
+	int conexa = 0;					//Nos guardamos cuantos elementos tiene la mayor componente conexa
 	using Camino = std::deque<int>;	//Usamos caminos y nos guardamos el más largo
 
 public:
