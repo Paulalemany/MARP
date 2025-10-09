@@ -65,52 +65,77 @@ public:
 		int decision = coinciden(camA, camL, cam);
 		int d = 0;
 
-		if (decision == -1) {	//No coinciden ninguno
-
-			//Podemos o obligarlos a coinicidir  o que vayan por separado depende de que sea mejor
-			d = 1;
-
+		if (decision == -1) {	//Está justo a mitad de camino entre una casa y otra
+			//Esto es si el trabajo está en mitad del camino entre ambos
+			d += camA.size() - 1;
+			d += camL.size() - 1;
 		}
-		else if (decision == 1) {	//Está en ambos caminos
+		else if (decision == 0) {	//Está en ambos caminos
 			//Si está en ambos caminos ese punto es el punto de encuentro
 			//El coste en luz será lo que tarda 1 de los dos en ir al trabajo más lo que tarda el otro en ir al punto de encuentro
 			d += cam.size() - 1;
-			d += camA.size() - 1;	///Podría ser también el otro el que haya que sumar? hay que verlo
+			//Le sumas además la diferencia entre ambos diria
+			int r = camA.size() - (camL.size() - 1);
+			int rest = abs(r);
+			d += rest;	///Podría ser también el otro el que haya que sumar? hay que verlo efectivamente no se puede hacer así
 		}
-		else if (decision == 2) {	//Coincide con el camino de lucas
-			d = camL.size() - 1;	//Luz de lo que se gasta en el camino de Lucas
-			//Le sumamos lo que tarda Alex al punto comun
-			d += cam.size() - 1;
-			
-		}
-		else {	//Coincide con el camino de Alex
+		else if (decision == 1) {	//Coincide con el camino de Alex
 			d = camA.size() - 1;	//Luz que se gasta en el camino de alex
 			//Le sumamos lo que tarda Lucas al punto comun
 			int c = cam.size();
 			d += c - 1;
 		}
+		else if (decision == 2) {	//Coincide con el camino de lucas
+			d = camL.size() - 1;	//Luz de lo que se gasta en el camino de Lucas
+			//Le sumamos lo que tarda Alex al punto comun
+			d += cam.size() - 1;
 
-		cout << d - 1 << '\n';
+		}
+		else if (decision == 3) d += camA.size() - 1;
+		else if (decision == 4) d += camL.size() - 1;
+		else if (decision == 5) {
+			//Miro si se juntan en algún momento?
+		}
+
+		cout << d << '\n';
 
 	}
 
 	int coinciden(Camino A, Camino L, Camino& comun) {
 
-		int i = 0;
+		//Si en el camino común está el trabajo se ven directamente ahí
+		if (Co.count(t) == 1) return -1;
+
+		//Si en el camino de 1 está la casa del otro es solo ese camino
+		if (Al.count(l) == 1) return 3;
+		if (Lu.count(s) == 1) return 4;
+
+		int casas = 2;
 		int encontradoA = 0;
 		int encontradoL = 0;
-		while (i < comun.size() && encontradoA == 0 && encontradoL == 0) {
-			encontradoA = Al.count(comun.front());
-			encontradoL = Lu.count(comun.front());
+		while (!comun.empty() && encontradoA == 0 && encontradoL == 0) {
+			//Si en el camino común hay en ambos más elementos a parte de las casa de cada uno
+			if (comun.front() == s || comun.front() == l) {
+				comun.pop_front();
+				casas--;
+			}
 
-			//Encontrado en ambos
-			if (encontradoA == 1 && encontradoL == 1) return 0;		//Ambos caminos
-			else if (encontradoA == 1) return 1;					//Camino de alex
-			else if (encontradoL == 1) return 2;					//Camino de Lucas
-			else comun.pop_front();
+			if (!comun.empty()) {
+				encontradoA = Al.count(comun.front());
+				encontradoL = Lu.count(comun.front());
+
+
+
+				//Encontrado en ambos
+				if (encontradoA == 1 && encontradoL == 1) return 0;		//Ambos caminos
+				else if (encontradoA == 1) return 1;					//Camino de alex
+				else if (encontradoL == 1) return 2;					//Camino de Lucas
+				else comun.pop_front();
+			}
+			
 		}
 		
-		return -1;	//Ningún camino
+		return 5;	//Ningún camino
 	}
 
 	void bfs(Grafo& g, int o) {
