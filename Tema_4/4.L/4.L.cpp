@@ -71,10 +71,17 @@ public:
 			d = 1;
 
 		}
+		else if (decision == 1) {	//Está en ambos caminos
+			//Si está en ambos caminos ese punto es el punto de encuentro
+			//El coste en luz será lo que tarda 1 de los dos en ir al trabajo más lo que tarda el otro en ir al punto de encuentro
+			d += cam.size() - 1;
+			d += camA.size() - 1;	///Podría ser también el otro el que haya que sumar? hay que verlo
+		}
 		else if (decision == 2) {	//Coincide con el camino de lucas
 			d = camL.size() - 1;	//Luz de lo que se gasta en el camino de Lucas
 			//Le sumamos lo que tarda Alex al punto comun
-			d += Camino(cam.front(), s).size() - 1;
+			d += cam.size() - 1;
+			
 		}
 		else {	//Coincide con el camino de Alex
 			d = camA.size() - 1;	//Luz que se gasta en el camino de alex
@@ -83,36 +90,27 @@ public:
 			d += c - 1;
 		}
 
-
-		////Miramos también a qué distancia está
-		//int d = cam.size() - 1;
-
-		////Con estos datos quitamos de la cola la mitad para que queden a mitad de camino
-		//for (int i = 0; i < d / 2; i++) cam.pop_front();
-
-		////Buscamos la distancia que hay desde el punto medio de sus casas a su trabajo
-		//cam = camino(cam.front(), t);
-
-		////Probar si es más eficiente hacerlo buscando un camino en vez de esto
-		//d += cam.size() - 1;
-
-		cout << d << '\n';
+		cout << d - 1 << '\n';
 
 	}
 
 	int coinciden(Camino A, Camino L, Camino& comun) {
 
 		int i = 0;
-		int encontrado = 0;
-		while (i < comun.size() && encontrado == 0) {
-			encontrado = Al.count(comun.front());
-			if (encontrado == 0) Lu.count(comun.front());
-			else return 1;	//Encontrado eb el camino de alex
-			if (encontrado == 0) comun.pop_front();
-			else return 2; //Encontrado en el camino de Lucas
+		int encontradoA = 0;
+		int encontradoL = 0;
+		while (i < comun.size() && encontradoA == 0 && encontradoL == 0) {
+			encontradoA = Al.count(comun.front());
+			encontradoL = Lu.count(comun.front());
+
+			//Encontrado en ambos
+			if (encontradoA == 1 && encontradoL == 1) return 0;		//Ambos caminos
+			else if (encontradoA == 1) return 1;					//Camino de alex
+			else if (encontradoL == 1) return 2;					//Camino de Lucas
+			else comun.pop_front();
 		}
 		
-		return -1;	//No coincide con el camino de ninguno
+		return -1;	//Ningún camino
 	}
 
 	void bfs(Grafo& g, int o) {

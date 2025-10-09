@@ -24,4 +24,9 @@
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>
+  <ItemGroup>
+    <Text Include="casos.txt">
+      <Filter>Archivos de origen</Filter>
+    </Text>
+  </ItemGroup>
 </Project>
