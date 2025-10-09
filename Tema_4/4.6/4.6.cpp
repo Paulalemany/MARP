@@ -38,10 +38,12 @@ public:
 		ami(g.V()), s(s) {
 
 		int nodos = 0;
+		int ini = 0;
 		while (nodos < g.V()) {
 
 			int amig = 0;
-			dfs(g, nodos, amig);
+			dfs(g, primerSinVisita(ini), amig);
+			ini = primerSinVisita(ini);
 			nodos += amig;
 		}
 
@@ -72,6 +74,12 @@ public:
 
 		cout << "\n";
 	}
+
+	int primerSinVisita(int ini) {
+		int i = ini;
+		while (i < visit.size() && visit[i]) i++;
+		return i;
+	}
 };
 
 bool resuelveCaso() {
@@ -96,12 +104,16 @@ bool resuelveCaso() {
 			datos.push_back(d);
 		}
 
-		//Creamos las conexiones
-		for (int j = 0; j < datos.size() - 1; j++) {
-			for (int x = j + 1; x < datos.size(); x++) {
-				g.ponArista(datos[j], datos[x]);
+		if (datos.size() > 0) {
+
+			//Creamos las conexiones
+			for (int j = 0; j < datos.size() - 1; j++) {
+				for (int x = j + 1; x < datos.size(); x++) {
+					g.ponArista(datos[j] - 1, datos[x] - 1);
+				}
 			}
 		}
+		
 	}
 
 	Amiguisimo am(g, 0);
