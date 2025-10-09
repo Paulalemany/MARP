@@ -9,6 +9,7 @@
 #include <fstream>
 #include <deque>
 #include <queue>
+#include <unordered_set>
 using namespace std;
 
 #include "Grafo.h"
@@ -35,36 +36,89 @@ private:
     int l;				//Origen del grafo
     int t;				//Origen del grafo
 
+	unordered_set<int> Al;
+	unordered_set<int> Lu;
+	unordered_set<int> Co;
+
+
+
     using Camino = std::deque<int>;
 
 public:
 
 	MenosDinero(Grafo& g, int s, int l, int t) : visit(g.V(), false),
 		ant(g.V()), dist(g.V()), s(s), l(l), t(t) {
-		bfs(g);
+		bfs(g, s);
 
 		//Buscamos el camino más corto desde la casa de Alex a la casa de Lucas
-		Camino cam = camino(s, l);
-		//Miramos también a qué distancia está
-		int d = distancia(l);
+		//Miro el camino que debe Alex lucas al trabajo
+		Camino camA = camino(s, t, Al);
 
-		//Con estos datos quitamos de la cola la mitad para que queden a mitad de camino
-		for (int i = 0; i < d / 2; i++) cam.pop_front();
+		//Miro el camino que tiene que hacer lucas al trabajo
+		for (int i = 0; i < visit.size(); i++) visit[i] = false;
+		bfs(g, l);
+ 		Camino camL = camino(l, t, Lu);
 
-		//Buscamos la distancia que hay desde el punto medio de sus casas a su trabajo
-		cam = camino(cam.front(), t);
+		//Miramos donde coinciden	//Si el punto comun está en el camino de alguno de los dos tomamos ese camino
+		Camino cam = camino(l, s, Co);
 
-		//Probar si es más eficiente hacerlo buscando un camino en vez de esto
-		d += cam.size() - 1;
+		int decision = coinciden(camA, camL, cam);
+		int d = 0;
+
+		if (decision == -1) {	//No coinciden ninguno
+
+			//Podemos o obligarlos a coinicidir  o que vayan por separado depende de que sea mejor
+			d = 1;
+
+		}
+		else if (decision == 2) {	//Coincide con el camino de lucas
+			d = camL.size() - 1;	//Luz de lo que se gasta en el camino de Lucas
+			//Le sumamos lo que tarda Alex al punto comun
+			d += Camino(cam.front(), s).size() - 1;
+		}
+		else {	//Coincide con el camino de Alex
+			d = camA.size() - 1;	//Luz que se gasta en el camino de alex
+			//Le sumamos lo que tarda Lucas al punto comun
+			int c = cam.size();
+			d += c - 1;
+		}
+
+
+		////Miramos también a qué distancia está
+		//int d = cam.size() - 1;
+
+		////Con estos datos quitamos de la cola la mitad para que queden a mitad de camino
+		//for (int i = 0; i < d / 2; i++) cam.pop_front();
+
+		////Buscamos la distancia que hay desde el punto medio de sus casas a su trabajo
+		//cam = camino(cam.front(), t);
+
+		////Probar si es más eficiente hacerlo buscando un camino en vez de esto
+		//d += cam.size() - 1;
 
 		cout << d << '\n';
 
 	}
 
-	void bfs(Grafo& g) {
+	int coinciden(Camino A, Camino L, Camino& comun) {
+
+		int i = 0;
+		int encontrado = 0;
+		while (i < comun.size() && encontrado == 0) {
+			encontrado = Al.count(comun.front());
+			if (encontrado == 0) Lu.count(comun.front());
+			else return 1;	//Encontrado eb el camino de alex
+			if (encontrado == 0) comun.pop_front();
+			else return 2; //Encontrado en el camino de Lucas
+		}
+		
+		return -1;	//No coincide con el camino de ninguno
+	}
+
+	void bfs(Grafo& g, int o) {
 		queue<int> q;
-		dist[s] = 0; visit[s] = true;
-		q.push(s);
+		dist[o] = 0; visit[o] = true;
+		q.push(o);
 
 		while (!q.empty()) {
 			int v = q.front(); q.pop();
@@ -86,14 +140,16 @@ public:
 	}
 
 	//Devuelve el camino más corto desde el origen a v (Si existe)
-	Camino camino(int o, int v) const {
+	Camino camino(int o, int v, unordered_set<int>& set) const {
 		if (!hayCamino(v)) throw domain_error("No existe camino");
 		Camino cam;
 		for (int x = v; x != o; x = ant[x]) {
 			cam.push_front(x);
+			set.insert(x);
 		}
 			
 		cam.push_front(o);
+		set.insert(o);
 		return cam;
 	}
 
