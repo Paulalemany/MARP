@@ -46,6 +46,7 @@ private:
 	vector<bool> visit;					//vector de vértices visitados
 	vector<bool> pila;					//vector de vértices por comprobar adyacentes
 	pair <bool, char> ciclico;			//booleano para indicar si un digrafo tiene un ciclo y si es condicional o no
+	bool fin;							//booleano que marca si se ha llegado a algún fin
 
 	//O (V + A)
 	void dfs(Digrafo& g, int v, unordered_map <int, char>& map) {
@@ -54,7 +55,7 @@ private:
 		for (int w : g.ady(v)) {
 			//Hay un ciclo NO condicional por lo tanto el programa no termina
 			//Si el ciclo es condicional seguimos mirando el programa porque las opciones es a veces o puede que nunca
-			if (ciclico.first && ciclico.second == 'J') return;	
+			if (fin || (ciclico.first && ciclico.second == 'J')) return;	
 			if (!visit[w]) {		//Continuamos el recorrido en profundidad
 				dfs(g, w, map);
 			}
@@ -65,19 +66,32 @@ private:
 			}
 				
 		}
+		if (g.ady(v).size() == 0) {
+			fin = true;			//Hemos llegado a un fin del programa
+			ciclico.second = map[v];	//marcamos que camino nos ha llevado a ese final
+		}
 		pila[v] = false;
 	}
 
 public:
 
 	TerminaProgramaOscuro(Digrafo& g, unordered_map <int,char> & map) : visit(g.V(), false), pila(g.V(), false),
-		ciclico(false, ' ') {
+		ciclico(false, ' '), fin (false) {
 
 		//Aquí lo único que hay que comprobar es si hace un bucle infinito desde la primera vez que se llama
 		//Si hay instrucciones que no se llaman nunca o hay ciclos en instrucciones a las que no se puede llegar
 		//no nos importa porque el programa va a terminar igualmente
 		dfs(g, 0, map);
 
+		//Si ha llegado a un fin vemos si es por culpa de un condicional
+		int i = 0;
+
+		while (i < pila.size() && map[i] != 'C' && !pila[i]) {
+			i++;
+		}
+
+		if (i < pila.size() && pila[i]) ciclico.second = 'C';
+		
 
 		if (ciclico.first && ciclico.second == 'J') std::cout << "NUNCA";
 		else if (ciclico.first && ciclico.second == 'C') std::cout << "A VECES";
