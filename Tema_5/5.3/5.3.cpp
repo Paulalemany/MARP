@@ -28,71 +28,73 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-using Camino = std::deque<int>;
-
-class PaellaDeJueves {
+class OrdenacionTopologica {
 private:
 
-	vector<bool> visitS;
-	vector<bool> visitD;
-	int s;
+	vector<bool> visit;		//vector de vértices visitados
+	vector<bool> pila;		//vector de vértices por comprobar adyacentes
+	vector<int> ant;		//vector que marca el vértice anterior
+	bool ciclico;			//booleano para indicar si un digrafo tiene un ciclo
+	deque<int> postOrdern;	//Guardamos el recorrido en postOrden
 
-	void dfs(Digrafo& g, int v, vector<bool>& visit) {
+	void dfs(Digrafo& g, int v) {
 		visit[v] = true;
-		for (int w : g.ady(v))
-			if (!visit[w]) {
-				dfs(g, w, visit);
+		pila[v] = true;
+		for (int w : g.ady(v)) {
+			if (ciclico) return;	//Si hay un ciclo es imposible ordenarse topológicamente
+			if (!visit[w]) {		//Continuamos el recorrido en profundidad
+				ant[w] = v;
+				dfs(g, w);
 			}
+			else if (pila[w])	//Hay un ciclo
+				ciclico = true;
+		}
+		pila[v] = false;
+		postOrdern.push_front(v);
 	}
-
 
 public:
 
-	PaellaDeJueves(Digrafo& g, int s, int d) : visitS(g.V(), false), visitD(g.V(), false), s(s) {
-		dfs(g, s, visitS);	//Nodos a los que se puede llegar desde s (El origen)
-		Digrafo gi = g.inverso(); //Invertimos el grafo para que sea fiable
-		dfs(gi, d, visitD);	//Nodos que se puede llegar desde d (El destino)
+	OrdenacionTopologica(Digrafo& g) : visit(g.V(), false), pila(g.V(), false),
+		ant(g.V()), ciclico(false) {
 
-		//La unión de ambos es la solución
-		int cont = 0;
 		for (int i = 0; i < g.V(); i++) {
-			if (visitS[i] && visitD[i]) cont++;
+			if(!visit[i]) 
+				dfs(g, i);
 		}
+		
 
-		if (cont > 0) cout << cont - 2 << '\n';	//Restamos 2 porque no contamos ni el origen ni el destino
-		else cout << "IMPOSIBLE\n";
-
+		if (ciclico) cout << "Imposible";
+		else {
+			for (int i : postOrdern) {
+				cout << i + 1 << " ";
+				postOrdern.pop_front();
+			}
+		}
 	}
 
 };
 
 bool resuelveCaso() {
 	// leer los datos de la entrada
-	int NA, NV;
-	cin >> NV >> NA;
+	int T, D;
+
+	cin >> T >> D;
 
 	if (!std::cin)  // fin de la entrada
 		return false;
 
-	Digrafo g(NV);
+	Digrafo tareas(T);
 	int d1, d2;
 
-	for (int i = 0; i < NA; i++) {
-
+	for (int i = 0; i < D; i++) {
 		cin >> d1 >> d2;
-		g.ponArista(d1 - 1, d2 - 1);
+		tareas.ponArista(d1 - 1, d2 - 1);
 	}
 
-	int Q, o, d;
-	cin >> Q;
+	OrdenacionTopologica orden(tareas);
 
-	for (int i = 0; i < Q; i++) {
-
-		cin >> o >> d;
-		PaellaDeJueves p(g, o - 1, d - 1);
-	}
-
-	cout << "---\n";
+	cout << '\n';
 
 	return true;
 }
