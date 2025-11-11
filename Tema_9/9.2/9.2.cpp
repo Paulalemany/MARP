@@ -9,6 +9,7 @@
 #include <fstream>
 #include <vector>
 #include <algorithm>
+#include <queue>
 using namespace std;
 
 /*@ <answer>
@@ -29,6 +30,16 @@ struct intervalo {
 	int c, f;
 };
 
+class compare {
+
+public:
+	bool operator() (intervalo a, intervalo b) {
+		return a.c > b.c;
+	}
+};
+
+
+
 bool resuelveCaso() {
 	// leer los datos de la entrada
 	int C, F, N;
@@ -37,50 +48,55 @@ bool resuelveCaso() {
 	if (C + F + N == 0)
 		return false;
 
-	vector<intervalo> inter;
+	priority_queue<intervalo, vector<intervalo>, compare> intervalos;
 	int c, f;
 	for (int i = 0; i < N; i++) {
 		cin >> c >> f;
-		inter.push_back({ c,f });
+		intervalos.push({ c,f });
 	}
 
-	//Ordenamos los intervalos de menor a mayor fin
-	sort(inter.begin(), inter.end(), [](const intervalo& a, const intervalo& b) {
-		return a.f < b.f;
-	});
-
 	int tareas = 0;
+	intervalo mejor;
+	mejor.c = -1;
+	mejor.f = -1;
 	int posicion = C;	//Posición de finalización de la última tarea asignada
+	bool posible = true;
 
-	//minimo va a hacer falta 1 a no ser que sea imposible
-	//Es F - 1 porque el intervalo del final es abierto
-	int i = 0;
-	if (!inter.empty()) {
-		if (inter.size() == 1 && inter[0].c < C && inter[0].f >= F - 1) {
-			//Si solo hay una tarea comprobamos si cubre el intervalo
-			//Si no cubre el intervalo entero es imposible
-			tareas++;
-			posicion = inter[0].f;
-		}
-		else {
-			while (i < inter.size() - 1 && posicion < F) {
-				if (inter[i + 1].c > posicion) {	//Si el siguiente se pasa nos quedamos con el actual
-					tareas++;
-					posicion = inter[i].f;
-				}
-				i++;
+	//Hacemos F-1 porque el intervalo es cerrado al final
+	//si posicion == F - 1 ya no hace falta comprobar más
+	while (posible && !intervalos.empty() && posicion < F) {
+		//Miramos el primer intervalo y comprobamos si cubre el principio del intervalo general
+		if (intervalos.top().c <= posicion) {	//El intervalo es potencialmente bueno
+			if (intervalos.top().f > mejor.f) {	//sustituimos el mejor por el nuevo mejor
+				mejor.c = intervalos.top().c;
+				mejor.f = intervalos.top().f;
 			}
+			//Si no es mejor pasamos
+		}
+		else {	//El intervalo que estamos mirando se pasa del punto que queremos cubrir
 
-			//Como mira hasta el -1 habría que procesar el último caso de ser necesario
-			if (posicion < F && inter[i].c == posicion) {	//añadimos la tarea
-				tareas++;
-				posicion = inter[i].f;
-			}
+			//Guardamos el intervalo mejor y continuamos a partir de ahí
+			posible = mejor.c != -1;	//Si alguno de los dos puntos es -1 es que no se ha actualizado y no es posible
+			posicion = mejor.f;
+			mejor.c = intervalos.top().c;
+			mejor.f = intervalos.top().f;
+			posible = mejor.c <= posicion;
+			if (posible) tareas++;
 		}
+
+		intervalos.pop();
+	}
+
+	//El último intervalo no se gestiona asi que lo hacemos aparte
+	//Ponemos F - 1 porque eso significa que no ha llegado al final 
+	if (posible && posicion < F && mejor.f >= F) {
+		tareas++;
+		posicion = mejor.f;
 	}
 
 	// escribir la solución
-	if (posicion < F) cout << "Imposible\n";
+	// F - 1 porque eso significa que no ha llegado al final
+	if (tareas == 0 || posicion < F) cout << "Imposible\n";
 	else cout << tareas << '\n';
 
 	return true;
