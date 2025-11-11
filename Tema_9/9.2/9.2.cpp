@@ -88,14 +88,12 @@ bool resuelveCaso() {
 	}
 
 	//El último intervalo no se gestiona asi que lo hacemos aparte
-	//Ponemos F - 1 porque eso significa que no ha llegado al final 
 	if (posible && posicion < F && mejor.f >= F) {
 		tareas++;
 		posicion = mejor.f;
 	}
 
 	// escribir la solución
-	// F - 1 porque eso significa que no ha llegado al final
 	if (tareas == 0 || posicion < F) cout << "Imposible\n";
 	else cout << tareas << '\n';
 
