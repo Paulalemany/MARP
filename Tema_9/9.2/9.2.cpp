@@ -78,9 +78,11 @@ bool resuelveCaso() {
 			//Guardamos el intervalo mejor y continuamos a partir de ahí
 			posible = mejor.c != -1;	//Si alguno de los dos puntos es -1 es que no se ha actualizado y no es posible
 			posicion = mejor.f;
-			mejor.c = intervalos.top().c;
-			mejor.f = intervalos.top().f;
-			posible = mejor.c <= posicion;
+			if (posicion < F) {	//Puede que termine con eso
+				mejor.c = intervalos.top().c;
+				mejor.f = intervalos.top().f;
+				posible = mejor.c <= posicion;
+			}
 			if (posible) tareas++;
 		}
 
