@@ -1,3 +1,4 @@
+
 /*@ <authors>
  *
  * Nombre, apellidos y usuario del juez (TAISXXX) de los autores de la solución.
@@ -25,42 +26,56 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-void resuelveCaso() {
+bool resuelveCaso() {
 	// leer los datos de la entrada
-	int N, V;
-	cin >> N >> V;
+	int P, S;
+	cin >> P >> S;
 
-	int p;
+	if (!std::cin)  // fin de la entrada
+		return false;
+
+	//Leemos los datos de los pesos de las personas 
+	// y los ordenamos de menor peso a mayor
+	int peso;
 	priority_queue<int> ordenar;
-	deque<int> pilas;
-	for (int i = 0; i < N; i++) {
-		cin >> p;
-		ordenar.push(p);
+	deque<int> personas;
+	for (int i = 0; i < S; i++) {
+		cin >> peso;
+		ordenar.push(peso);
 	}
 
-	//Pasamos las pilas ordenadas a la deque
+	//Pasamos las personas ordenadas a la deque
 	while (!ordenar.empty()) {
-		pilas.push_front(ordenar.top());
+		personas.push_front(ordenar.top());
 		ordenar.pop();
 	}
 
-	int coches = 0;
-	int num = pilas.size();
-	//Lo hacemos asi porque si solo queda una pila y esta no es del valor del mínimo terminamos
-	while (!pilas.empty()) {
-		//No podemos poner solo 1 pila asi que hay que gastar 1
-		if (num > 1 && pilas.front() + pilas.back() >= V) {
-			coches++;
-			pilas.pop_back();
-			pilas.pop_front();
-			num -= 2;
+	int sillas = 0;		//Sillas que estan siendo utilizadas
+	while (!personas.empty()) {
+		//Comprobamos si la persona que más pesa ocupa una silla ella sola
+		if (personas.back() == P) {
+			sillas++;
+			personas.pop_back();
 		}
-		else {
-			pilas.pop_front();
-			num--;
+		else if (personas.size() > 1 && personas.front() + personas.back() <= P) {
+			//Esas personas ocupan una silla
+			sillas++;
+			personas.pop_front();
+			personas.pop_back();
+		}
+		else {	 
+			//Si esas dos personas se pasan quiere decir que la persona que más pesa
+			//De las dos ya no podrá subirse acompañada ya que todas las personas que quedan
+			//Pesa más que la pareja con la que se le compara
+			//Esa persona va sola
+			sillas++;
+			personas.pop_back();
 		}
 	}
-	cout << coches << '\n';
+
+	cout << sillas << '\n';
+
+	return true;
 }
 
 //@ </answer>
@@ -75,17 +90,13 @@ int main() {
 	auto cinbuf = std::cin.rdbuf(in.rdbuf());
 #endif
 
-	int numCasos;
-	std::cin >> numCasos;
-	for (int i = 0; i < numCasos; ++i)
-		resuelveCaso();
+	while (resuelveCaso());
 
-	// para dejar todo como estaba al principio y parar antes de salir
+	// para dejar todo como estaba al principio
 #ifndef DOMJUDGE
 	std::cin.rdbuf(cinbuf);
 	std::cout << "Pulsa Intro para salir..." << std::flush;
 	std::cin.get();
 #endif
-
 	return 0;
 }
