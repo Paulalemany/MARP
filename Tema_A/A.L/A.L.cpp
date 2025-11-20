@@ -48,15 +48,13 @@ private:
 
 	int N;		//numero de monedas que tenemos
 	int C;		//precio a pagar
-	int sum;	//Cuanto llevamos pagado
-	vector<int> formas;			//Cuantas maneras hay de obtener lo mínimo después de C
 	pair<int, EntInf> sol;		//Solución
 
 
 public:
 
 	CambioExacto(vector<int>& cartera, int N, int C) :
-		N(N), C(C), sum(0), formas((N + 1), 0) {
+		N(N), C(C){
 
 		//El máximo que podemos pagar es el sumatorio de lo que llevamos en la cartera
 		int max = 0;
@@ -75,7 +73,7 @@ public:
 			int c = cartera[i - 1];
 			for (int j = c; j <= max; ++j) {	//Esto puede que no sea así porque nos podemos pasar
 				minMonedas[j] = min(minMonedas[j], minMonedas[j - cartera[i - 1]] + 1);
-				formas[j] += formas[j - c];
+				formas[j] += formas[j - c];	//Esto no hace falta hacerlo
 			}
 		}
 
