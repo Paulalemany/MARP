@@ -24,4 +24,9 @@
       <Filter>Archivos de origen</Filter>
     </Text>
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="PriorityQueue.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
+  </ItemGroup>
 </Project>

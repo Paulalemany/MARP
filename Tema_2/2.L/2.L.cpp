@@ -6,20 +6,21 @@
 
 #include <iostream>
 #include <fstream>
-#include <algorithm>
-#include <limits>
 #include <queue>
 using namespace std;
 
 
 /*@ <answer>
 
- Para hacer la solución más eficiente primero si el numero de partituras 
- es igual al numero de instrumentos nos ahorramos calculos y devolvemos 
- el grupo con más músicos por lo que el coste seria O(1).
- Por otro lado cuando no es así repartimos una partitura a cada grupo y repartimos las restantes
- al grupo más grande hasta que se equilibren poco a poco. La complejidad en este caso es O(N) siendo N 
- las partituras restantes después de darle una partitura a cada grupo
+ Para solucionar este problema utilizamos una cola de prioridad
+ que ordena en base a la densidad de musicos por partitura.
+ Vamos repartiendo las partituras entre los diferentes instrumentos
+ de manera que la densidad del que tenga mayor densidad sea cada vez menor
+ hasta que nos quedemos sin partituras para repartir.
+
+ La complejidad de este algoritmo es de O(m log n)
+ siendo m el numero de partituras a repartir y
+ siendo n el numero de instrumentos diferentes que hay
 
  @ </answer> */
 
@@ -28,19 +29,52 @@ using namespace std;
  // Escribe el código completo de tu solución aquí debajo (después de la marca)
  //@ <answer>
 
-struct mus {
-    int N = 0; //numero de músicos
-    int P = 0; //numero de partituras
-    int res = 0;
+//Struct que guarda la información de los grupos de instrumentos
+struct instrumento {
+    int musicos;
+    int partituras = 1;
 };
 
-bool operator<(const mus& a, const mus& b) {
-    return (a.N / a.P) + a.res < (b.N / b.P + b.res);
+//Calcula numero de musicos por partitura
+//Hacemos la suma y el -1 para asegurarnos de que nos da la parte más alta de la división
+//O(1)
+int densidad(const instrumento& a) {
+    return (a.musicos + a.partituras - 1) / a.partituras;
+}
+
+//Queremos que el instrumento más prioritario sea aquel que tiene mayor densidad de musicos por partitura
+//O(1)
+bool operator<(const instrumento& a, const instrumento& b) {
+    return densidad(a) < densidad(b);
+}
+
+//Vamos dandole partituras a aquellos grupos con mayor densidad de músicos
+//Devolvemos el numero de integrantes del subgrupo mayoritarioç
+//O(partituras log n) siendo partituras el numero de partituras a repartir 
+// y siendo n el numero de distintos instrumentos que hay
+int solucion(priority_queue<instrumento>& cola, int partituras) {
+
+    //Vamos repartiendo las partituras a los grupos que tengan mayor densidad
+    for (int i = 0; i < partituras; i++) {
+
+        instrumento ins = cola.top();
+        cola.pop();
+
+        //Le sumamos una partitura más
+        ins.partituras += 1;
+
+        //Los volvemos a añadir a la cola
+        cola.push(ins);
+    }
+
+    return densidad(cola.top());
 }
 
 bool resuelveCaso() {
 
     // leemos la entrada
+    //P -> numero de partituras
+    //N -> Grupos de musicos
     int P, N;
     cin >> P >> N;
 
@@ -48,40 +82,24 @@ bool resuelveCaso() {
         return false;
 
     // leer el resto del caso y resolverlo
-    priority_queue<mus> cola;
+    priority_queue<instrumento> cola;
     int dato = 0;
-    mus instrumento;
+    int artistas = 0;
+    instrumento ins;
 
     //Guardamos el número de músicos
-
     for (int i = 0; i < N; i++) {
-
         cin >> dato;
-        instrumento.N = dato;
-        instrumento.P = 1;
-        cola.push(instrumento);
+        artistas += dato;
+        ins.musicos = dato;
+        cola.push(ins);
     }
 
-    priority_queue<int> sol;
+    //Calculamos las partituras que quedan por repartir
+    //Teniendo en cuenta que minimo debe haber una por grupo
+    int partRestantes = P - N;
 
-    if (P == N) cout << cola.top().N << '\n';     //Si solo hay una partitura por instrumento el que más músicos tenga será el que buscamos
-    else {
-        int res = P - N;    //Las partituras que faltan por repartir por prioridad son las que quedan después de darle una a cada instrumento
-        mus mus;
-
-        for (int i = 0; i < res; i++) {
-
-            mus = cola.top();
-            cola.pop();
-            mus.P++;
-            if (((mus.N + mus.res) % mus.P != 0) && (mus.res == 0)) mus.res += 1;
-            else if (((mus.N + mus.res) % mus.P == 0 && mus.res == 1)) mus.res--;   //Si la división es exacta no hay que sumarle el resto
-            cola.push(mus);
-        }
-
-        cout << (cola.top().N / cola.top().P + cola.top().res) << '\n';
-    }
-
+    cout << solucion(cola, partRestantes) << '\n';
     return true;
 }
 
