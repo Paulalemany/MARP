@@ -6,8 +6,6 @@
 
 #include <iostream>
 #include <fstream>
-#include <algorithm>
-#include <limits>
 #include <queue>
 using namespace std;
 
@@ -39,16 +37,19 @@ struct canal {  //Estructura que guarda la información del canal
     int primeTime = 0;
 };
 
-struct pT {     //Estructura para escribir la solución
-    int c = 0;
-    int pt = 0;
+struct sol {
+    int canal = 0;
+    int primeTime = 0;
 };
 
-bool operator<(const canal& a, const canal& b) {
-    return b.espectadores < a.espectadores;
+bool operator>(const canal& a, const canal& b) {
+    return a.espectadores > b.espectadores;
 }
-bool operator<(const pT& a, const pT& b) {
-    return b.pt > a.pt;
+
+bool operator>(const sol& a, const sol& b) {
+    return (a.primeTime > b.primeTime) ||
+        ((a.primeTime == b.primeTime) &&
+            (a.canal < b.canal));
 }
 
 bool resuelveCaso() {
@@ -58,65 +59,62 @@ bool resuelveCaso() {
     cin >> D >> C >> N;
     if (!cin) return false;
 
-    // leer el resto del caso y resolverlo
-    IndexPQ<int, canal> canales;    //Estructura donde guardamos los canales
-    int datos;
-    canal can;
+    // leer el resto del caso y resolverlo  
+    IndexPQ<int, canal> canales;
 
-    //Guardamos el estado de los canales en el minuto 0
+    //Guardamos el estado inicial de los espectadores en el minuto 0
+    int datos;
+    canal cnl;
+
     for (int i = 0; i < C; i++) {
         cin >> datos;
-        can.espectadores = datos;
-
-        canales.push(i + 1, can);   //Lo guardamos con i + 1 como id porque los canales van ordenados empezando en 1
+        cnl.espectadores = datos;
+        canales.push(i + 1, { cnl.espectadores,0 });
     }
 
-    //Empezamos el bucle del primeTime
+    //Vamos con las actualizaciones
     int min = 0;    //minuto de la última actualización
     int puntos = 0; //Tiempo de primetime a sumar
-    int canal = 0;  //Para leer el canal que hay que actualizar
-    int cont = 0;   //para saber cuanto tiempo llevamos de programa
+    int c = 0;  //Para leer el canal que hay que actualizar
+    int ult = 0;   //para saber cuanto tiempo llevamos de programa
+
     for (int i = 0; i < N; i++) {
 
-        //Vemos cuantos minutos han pasado hasta la actualización
-        cin >> datos;   //Minuto en el que se actualiza
+        //Sumamos el tiempo de primeTime que lleva el canal en primera posición
+        cin >> min;
 
-        puntos = datos - min;
-        cont += puntos;
-        min = datos;
+        puntos = min - ult;
+        ult = min;  //La ultima actualización ahora es la actual
 
-        //Se lo sumamos al top de los canales
-        can = canales.top().prioridad;
-        canales.update(canales.top().elem, { can.espectadores, can.primeTime + puntos }); 
+        canales.update(canales.top().elem,
+            { canales.top().prioridad.espectadores,
+            canales.top().prioridad.primeTime + puntos });
 
-        cin >> canal;
-        //Hacemos la actualización
-        while (canal != -1) {
+        //Vemos el nuevo orden de los canales
+        while (cin >> c && c != -1) {
             cin >> datos;
-            can = canales.priority(canal);
-            canales.update(canal, { datos, can.primeTime });    //Tengo la ligera sospecha de que esto me va a truncar mi primeTime del canal en vez de sumar
-            cin >> canal;
+            canales.update(c, {datos, canales.priority(c).primeTime});
         }
     }
 
+ 
     //El tiempo restante se lo sumamos al ultimo que se quedó en cabeza
-    puntos = D - cont;
-    can = canales.top().prioridad;
-    canales.update(canales.top().elem, { can.espectadores, can.primeTime + puntos });
+    puntos = D - ult;
+    canales.update(canales.top().elem,
+        { canales.top().prioridad.espectadores,
+        canales.top().prioridad.primeTime + puntos });
 
-    priority_queue<pT> prime;
-
-    for (int i = 0; i < C; i++) {
-        if (canales.top().prioridad.primeTime > 0) {
-            prime.push({ canales.top().elem, canales.top().prioridad.primeTime });
-        }
+    IndexPQ <int, sol> s;
+    while (!canales.empty()) {
+        s.push(canales.top().elem, { canales.top().elem, canales.top().prioridad.primeTime });
         canales.pop();
     }
 
-    datos = prime.size();
-    for (int i = 0; i < datos; i++) {
-        cout << prime.top().c << " " << prime.top().pt << '\n';
-        prime.pop();
+    //Escribimos la solución
+    while (!s.empty()) {
+        if (s.top().prioridad.primeTime > 0)
+            cout << s.top().elem << " " << s.top().prioridad.primeTime << "\n";
+        s.pop();
     }
      
     cout << "---\n";

@@ -123,10 +123,13 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\3.0\3.L.cpp" />
+    <ClCompile Include="3.L.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\3.2\IndexPQ3L.h" />
+    <Text Include="casos.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IndexPQ3L.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

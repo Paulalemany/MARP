@@ -15,12 +15,17 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\3.0\3.L.cpp">
+    <ClCompile Include="3.L.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\3.2\IndexPQ3L.h">
+    <Text Include="casos.txt">
+      <Filter>Archivos de origen</Filter>
+    </Text>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="IndexPQ3L.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
   </ItemGroup>

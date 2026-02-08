@@ -23,7 +23,7 @@
 
 // T es el tipo de las prioridades
 // Comparator dice cuándo un valor de tipo T es más prioritario que otro
-template <typename U, typename T = int, typename Comparator = std::less<T>>
+template <typename U, typename T = int, typename Comparator = std::greater<T>>
 
 class IndexPQ {
 public:
@@ -43,6 +43,7 @@ private:
    /* Objeto función que sabe comparar prioridades.
     antes(a,b) es cierto si a es más prioritario que b */
    Comparator antes;
+
 
 public:
    IndexPQ(Comparator c = Comparator()) : array(1), antes(c) {}
