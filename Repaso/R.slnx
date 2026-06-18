@@ -3,10 +3,13 @@
     <Platform Name="x64" />
     <Platform Name="x86" />
   </Configurations>
+  <Project Path="R.10/R.10.vcxproj" Id="538213c0-9345-460a-8352-93011e575d2f" />
   <Project Path="R.2/R.2.vcxproj" Id="17dfd46b-8b01-43e2-ba97-2e49bfaf9fb2" />
   <Project Path="R.3/R.3.vcxproj" Id="7c775e3e-88a9-4371-b945-686ad18b7793" />
   <Project Path="R.4/R.4.vcxproj" Id="50c90f57-c68f-4e9d-8ca8-f37f72381a1d" />
   <Project Path="R.5/R.5.vcxproj" Id="dc6fefa5-10ac-4f23-a70f-8d80f99f2937" />
   <Project Path="R.6/R.6.vcxproj" Id="918db7bd-9d7d-41e4-a377-aee8168b0670" />
   <Project Path="R.7/R.7.vcxproj" Id="9aac81dd-466c-4aa0-b762-e156dc2de267" />
+  <Project Path="R.8/R.8.vcxproj" Id="bed13107-3ebd-4deb-90bd-2bac67cc89b0" />
+  <Project Path="R.9/R.9.vcxproj" Id="4cca284b-6870-43cf-95d8-2326cc2be314" />
 </Solution>
