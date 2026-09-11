@@ -20,8 +20,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="TreeSet_AVL.h">
+      <Filter>Archivos de encabezado</Filter>
+    </ClInclude>
     <ClInclude Include="bintree.h">
       <Filter>Archivos de encabezado</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="casos.txt">
+      <Filter>Archivos de encabezado</Filter>
+    </Text>
   </ItemGroup>
 </Project>
