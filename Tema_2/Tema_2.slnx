@@ -7,4 +7,5 @@
   <Project Path="2.2/2.2.vcxproj" Id="ff9920c8-9f00-4cbb-a499-ff65a8f2bdf5" />
   <Project Path="2.3/2.3.vcxproj" Id="ff79f3d3-9eb9-49c1-8bab-12f5d87b5e5c" />
   <Project Path="2.4/2.4.vcxproj" Id="abd6df19-945e-4669-b8f7-f24466ff4779" />
+  <Project Path="2.5/2.5.vcxproj" Id="e45af357-595b-4903-9bc2-8c4aa2616956" />
 </Solution>
