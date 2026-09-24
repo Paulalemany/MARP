@@ -13,15 +13,14 @@ using namespace std;
 /*@ <answer>
 
  Para resolver este problema primero guardamos los grupos de músicos en una cola de prioridad de máximos
- Para que el grupo más prioritario sea aquel que tiene más músicos que comparten partitura.
+ Para que el grupo más prioritario sea aquel que tiene más músicos que comparten partitura, es decir, el numero de musicos
+ entre el numero de partituras tiene un conjunto mayor.
 
- Como caso base, sabemos que si hay más partituras que músicos cada músico tendrá una partitura por lo que
- en ese caso nos ahorramos el cáculo. Otra cosa ha tener en cuenta es que se nos asegura que cada grupo de
- instrumentos tiene al menos una partitura por lo que, contamos como si tuviesemos p - n partituras 
+ Contamos como si tuviesemos p - n partituras 
  (siendo p el numero de partituras y n el numero de grupos de instrumentos diferentes) para reducir un poco
- la longitud del bucle.
+ la longitud del bucle, ya que sabemos que como minimo cada grupo tiene 1 partitura.
 
- El bucle lo que hace es dar una partitura extra al grupo mayor, dividiendo ese grupo en dos diferentes y añadiendolos
+ El bucle lo que hace es dar una partitura extra al grupo mayor y lo vuelve a añadir
  a la cola. Así siempre se le dará una partitura a aquellos músicos que esten compartiendo con más compañeros.
  El coste de este bucle esta en el orden de O(p log n), siendo p el número de partituras disponibles y n el número 
  de grupos de instrumentos que tenemos.
@@ -34,54 +33,55 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
+struct musicos {
+	int integrantes;
+	int partituras;
+};
+
+bool operator<(musicos const& a, musicos const& b)
+{
+	return b.integrantes / b.partituras < a.integrantes / a.partituras ||
+		(b.integrantes / b.partituras == a.integrantes / a.partituras && b.integrantes < a.integrantes);
+}
+
+bool operator>(musicos const& a, musicos const& b) {
+	return b < a;
+}
+
 void resuelveCaso() {
 	// leer los datos de la entrada
 	int p, n;
 	cin >> p >> n;
-	priority_queue<int> musicos;
+	priority_queue<musicos, vector<musicos>, greater<musicos>> mus;
 
 	int m;
-	int numeroMusicos = 0;
 	for (int i = 0; i < n; i++) {
 		cin >> m;
-		musicos.push(m);
-		numeroMusicos += m;
+		mus.push({ m, 1 });
 	}
 
-	// resolver el caso posiblemente llamando a otras funciones
+	// Le damos minimo una partitura a cada grupo de instrumentos
+	p -= n;
 
-	// Cada grupo de musicos tiene minimo 1 partitura asegurada asi que restamos ese numero
-	// para hacer el bucle más pequeño
+	while (p > 0) {
 
-	//Si tenemos mas partituras que musicos cada musico tendra una
-	if (p >= numeroMusicos) {
-		cout << "1" << '\n';
+		// Le damos una partitura al grupo mayor
+		musicos top = mus.top(); mus.pop();
+
+		//Hemos gastado una partitura
+		top.partituras++;
+		p--;
+
+		mus.push(top); 
+
 	}
-	else {
 
-		// Le damos minimo una partitura a cada grupo de instrumentos
-		p -= n;
+	int sol = mus.top().integrantes / mus.top().partituras;
+	if (mus.top().integrantes % mus.top().partituras != 0)
+		sol++;
 
-		while (p > 0) {
+	cout << sol << '\n';
 
-			// Le damos una partitura al grupo mayor
-			int top = musicos.top(); musicos.pop();
-			int g1, g2;
-
-			//Dividimos en dos grupos
-			g1 = top / 2;
-			g2 = top - g1;
-
-			musicos.push(g1); musicos.push(g2);
-
-			//Hemos gastado una partitura
-			p--;
-		}
-
-
-		// escribir la solución
-		cout << musicos.top() << '\n';
-	}
 }
 
 //@ </answer>
