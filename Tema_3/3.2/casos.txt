@@ -1,0 +1,18 @@
+6 
+Spain 12
+Italy 10
+?
+France 18
+Spain -5
+?
+10
+Germany 8
+France 8
+?
+Spain 12
+?
+Spain 8
+Italy 22
+?
+Italy -7
+?
