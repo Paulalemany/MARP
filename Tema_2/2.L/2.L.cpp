@@ -40,8 +40,14 @@ struct musicos {
 
 bool operator<(musicos const& a, musicos const& b)
 {
-	return b.integrantes / b.partituras < a.integrantes / a.partituras ||
-		(b.integrantes / b.partituras == a.integrantes / a.partituras && b.integrantes < a.integrantes);
+	int ratioB = b.integrantes / b.partituras;
+	if (b.integrantes % b.partituras != 0) ratioB++;
+
+	int ratioA = a.integrantes / a.partituras;
+	if (a.integrantes % a.partituras != 0) ratioA++;
+
+	return ratioB < ratioA ||
+		(ratioB == ratioA && b.integrantes < a.integrantes);
 }
 
 bool operator>(musicos const& a, musicos const& b) {
