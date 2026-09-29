@@ -21,10 +21,10 @@ using namespace std;
  @ </answer> */
 
 
-// ================================================================
-// Escribe el código completo de tu solución aquí debajo
-// ================================================================
-//@ <answer>
+ // ================================================================
+ // Escribe el código completo de tu solución aquí debajo
+ // ================================================================
+ //@ <answer>
 
 struct tarea {
 	int c;
@@ -33,12 +33,12 @@ struct tarea {
 	int id;
 };
 
-bool operator<(tarea const& a, tarea const& b){
+bool operator<(tarea const& a, tarea const& b) {
 	return b.c < a.c ||
-	(b.c == a.c && b.f < a.f);
+		(b.c == a.c && b.f < a.f);
 }
 
-bool operator>(tarea const& a, tarea const& b){
+bool operator>(tarea const& a, tarea const& b) {
 	return b < a;
 }
 
@@ -53,29 +53,29 @@ void resuelveCaso() {
 
 	// Tareas unicas
 	int c, f, p;
-	for (int i = 0; i < N; i++){
+	for (int i = 0; i < N; i++) {
 		cin >> c >> f;
 
-		tareas.push(i, {c, f, 0, i});
+		tareas.push(i, { c, f, 0, i });
 	}
 
 	// Tareas periódicas
-	for (int i = 0; i < M; i++){
+	for (int i = 0; i < M; i++) {
 		cin >> c >> f >> p;
-		tareas.push(N + i, {c, f, p, N + i});
+		tareas.push(N + i, { c, f, p, N + i });
 	}
 
 	// resolver el caso posiblemente llamando a otras funciones
 	bool solapamiento = false;
 
 	int t = tareas.top().prioridad.c;
-	while (tareas.size() > 1 && !solapamiento && t < T){
+	while (tareas.size() > 1 && !solapamiento && t < T) {
 
-		tarea act = tareas.top().prioridad; 
+		tarea act = tareas.top().prioridad;
 
 		// Si la tarea es periodica la acrualizamos
 		if (act.p != 0 && act.c + act.p < T)
-			tareas.update(act.id, {act.c + act.p, act.f + act.p, act.p, act.id});
+			tareas.update(act.id, { act.c + act.p, act.f + act.p, act.p, act.id });
 		else
 			tareas.pop();
 
@@ -84,7 +84,7 @@ void resuelveCaso() {
 		if (comienzo < T)
 			solapamiento = act.f > comienzo;
 
-		t++;
+		t = comienzo;
 	}
 
 	// escribir la solución
@@ -98,7 +98,7 @@ void resuelveCaso() {
 //  Lo que se escriba dejado de esta línea ya no forma parte de la solución.
 
 int main() {
-// ajustes para que cin extraiga directamente de un fichero
+	// ajustes para que cin extraiga directamente de un fichero
 #ifndef DOMJUDGE
 	std::ifstream in("casos.txt");
 	if (!in.is_open())
@@ -111,7 +111,7 @@ int main() {
 	for (int i = 0; i < numCasos; ++i)
 		resuelveCaso();
 
-// para dejar todo como estaba al principio y parar antes de salir
+	// para dejar todo como estaba al principio y parar antes de salir
 #ifndef DOMJUDGE
 	std::cin.rdbuf(cinbuf);
 	std::cout << "Pulsa Intro para salir..." << std::flush;
