@@ -68,7 +68,7 @@ void resuelveCaso() {
 	// resolver el caso posiblemente llamando a otras funciones
 	bool solapamiento = false;
 
-	int t = 0;
+	int t = tareas.top().prioridad.c;
 	while (tareas.size() > 1 && !solapamiento && t < T){
 
 		tarea act = tareas.top().prioridad; 
@@ -81,7 +81,8 @@ void resuelveCaso() {
 
 		// Vemos si la siguiente tarea solapa
 		int comienzo = tareas.top().prioridad.c;
-		solapamiento = act.f >= comienzo;
+		if (comienzo < T)
+			solapamiento = act.f >= comienzo;
 
 		t++;
 	}
