@@ -82,7 +82,7 @@ void resuelveCaso() {
 		// Vemos si la siguiente tarea solapa
 		int comienzo = tareas.top().prioridad.c;
 		if (comienzo < T)
-			solapamiento = act.f >= comienzo;
+			solapamiento = act.f > comienzo;
 
 		t++;
 	}
