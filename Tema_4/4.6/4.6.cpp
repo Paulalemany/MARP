@@ -94,11 +94,8 @@ void resuelveCaso() {
 
 		//Pasamos de los grupos y ponemos todas las conexiones 
 		//Porque no tenemos manera de saber cuantos son grupos
-		for (int j = 0; j < n; j++) {
-			for (int x = j + 1; x < n; x++) {
-
-				amigos.ponArista(aristas[j]-1, aristas[x] - 1);
-			}
+		for (int j = 0; j < n-1; j++) {
+			amigos.ponArista(aristas[j]-1, aristas[j+1] - 1);
 		}
 	}
 
