@@ -83,7 +83,7 @@ public:
     *Devuelve si existe una arista que conecte dos vértices 
     * O(grado(v)) siendo v el vértice con menos adyacentes
    */
-   bool const& hayArista(int v1, int v2) {
+   bool const hayArista(int v1, int v2) {
 
        //Miramos los adyacentes a uno de los vértices
        Adys ad1 = ady(v1);
