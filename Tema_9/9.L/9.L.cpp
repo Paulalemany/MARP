@@ -58,19 +58,6 @@ public:
 
 	Valor distancia(int v) const { return dist[v]; }
 
-	IndexPQ<Valor> pueblosCercanos() {
-
-		IndexPQ<Valor> cercanos(dist.size());
-
-		//Resto 1 para que la otra planta no cuente para esto
-		for (int i = 0; i < dist.size() - 1; i++) {
-
-			cercanos.push(i, dist[i]);
-		}
-
-		return cercanos;
-	}
-
 private:
 	const Valor INF = std::numeric_limits<Valor>::max();
 	int origen;
@@ -86,57 +73,15 @@ private:
 	}
 };
 
-//O(N)
-int primeroNorte(Dijkstra<int> Norte, Dijkstra<int> Sur, int N) {
-	IndexPQ<int> cN = Norte.pueblosCercanos();
-	int costN = 0;
-	int costS = 0;
-	int mitad = (N - 2) / 2;
-
-	//<= para que no se cuente a si mismo
-	for (int i = 0; i <= mitad; i++) {
-		costN += cN.top().prioridad;
-		cN.pop();
-	}
-
-	//Los restantes van desde la planta sur
-	for (int i = 0; i < mitad; i++) {
-		costS += Sur.distancia(cN.top().elem);
-		cN.pop();
-	}
-
-	return costN * 2 + costS * 2;
-}
-
-//O(N)
-int primeroSur(Dijkstra<int> Norte, Dijkstra<int> Sur, int N) {
-	IndexPQ<int> cS = Sur.pueblosCercanos();
-	int costN = 0;
-	int costS = 0;
-	int mitad = (N - 2) / 2;
-
-	//<= para que no se cuente a si mismo
-	for (int i = 0; i <= mitad; i++) {
-		costS += cS.top().prioridad;
-		cS.pop();
-	}
-
-	//Los restantes van desde la planta sur
-	for (int i = 0; i < mitad; i++) {
-		costN += Norte.distancia(cS.top().elem);
-		cS.pop();
-	}
-	return costN * 2 + costS * 2;
-}
-
 void resuelveCaso() {
 	// leer los datos de la entrada
-	int N, M;
+	long long N, M;
 	cin >> N >> M;
 
-	DigrafoValorado<int> mapa(N);
+	DigrafoValorado<long long> mapa(N);
 
-	int a, b, c;
+	long long a, b;
+	long long c;
 	for (int i = 0; i < M; i++) {
 		cin >> a >> b >> c;
 		mapa.ponArista({ a - 1, b - 1, c });
@@ -144,15 +89,33 @@ void resuelveCaso() {
 	}
 
 	// resolver el caso posiblemente llamando a otras funciones
-	Dijkstra<int> Norte(mapa, 0);	//La estacion norte esta en el 0
-	Dijkstra<int> Sur(mapa, N - 1);
+	Dijkstra<long long> Norte(mapa, 0);	//La estacion norte esta en el 0
+	Dijkstra<long long> Sur(mapa, N - 1);
 
-	//No podemos asegurar que sea mejor priorizar el norte
-	int solN = primeroNorte(Norte, Sur, N);
-	int solS = primeroSur(Norte, Sur, N);
+	IndexPQ<long long> ahorro(N);
+	for (long long i = 1; i < N - 1; i++) {	//No queremos contar las plantas
+
+		long long a = Norte.distancia(i) - Sur.distancia(i);
+		ahorro.update(i, a);	//Ahorro de que el pueblo sea de la planta norte
+	}
+
+	long long costN = 0;
+	long long costS = 0;
+	long long mitad = (N - 2) / 2;
+
+	while (!ahorro.empty()) {
+
+		if (ahorro.size() > mitad)	//Van al norte
+			costN += Norte.distancia(ahorro.top().elem);
+		else	//Van al sur
+			costS += Sur.distancia(ahorro.top().elem);
+
+		ahorro.pop();
+	}
+
 
 	// escribir la solución
-	cout << min(solN, solS) << '\n';
+	cout << costN*2 + costS * 2 << '\n';
 }
 
 //@ </answer>
