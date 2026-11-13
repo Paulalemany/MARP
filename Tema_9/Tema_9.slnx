@@ -5,5 +5,7 @@
   </Configurations>
   <Project Path="9.1/9.1.vcxproj" Id="46c8c1c4-fb80-42e0-8b14-89c60d753a2c" />
   <Project Path="9.2/9.2.vcxproj" Id="7c0d76a6-38c1-4441-8ca4-16608fd8cead" />
+  <Project Path="9.3/9.3.vcxproj" Id="0ccd35a7-f848-475a-84b1-6ee83b1b7c66" />
+  <Project Path="9.4/9.4.vcxproj" Id="35afdcf2-40e9-4a74-b9ac-e455e767cc45" />
   <Project Path="9.L/9.L.vcxproj" Id="7f9c4b4a-ace3-45a2-ad3a-ed97e6a3f505" />
 </Solution>
