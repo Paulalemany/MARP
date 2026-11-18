@@ -43,66 +43,54 @@ using namespace std;
  // ================================================================
  //@ <answer>
 
-int formas(vector<int> const& cordeles, int L)
+
+long long formas(vector<int> const& cordeles, int L)
 {
 	int n = cordeles.size(); 
-	Matriz<int> form(n + 1, L + 1, 0); 
-	form[0][0] = 1; 
+	vector<long long> form(L + 1, 0);
+	form[0] = 1; 
 	
 	for (int i = 1; i <= n; ++i) 
 	{
-		form[i][0] = 1; 
-		for (int j = 1; j <= L; ++j) {
-			if (cordeles[i - 1] > j) 
-				form[i][j] = form[i - 1][j]; 
-			else 
-				form[i][j] = form[i - 1][j] + form[i-1][j - cordeles[i - 1]];
+		for (int j = L; j >= cordeles[i-1]; --j) {
+				form[j] = form[j] + form[j - cordeles[i - 1]];
 		}
-
 	}
-	return form[n][L];
+	return form[L];
 }
 
 EntInf minNum(vector<int> const& cordeles, int L)
 {
 	int n = cordeles.size();
-	Matriz<EntInf> minN(n + 1, L + 1, Infinito);
+	vector<EntInf> minN(L + 1, Infinito);
 
-	minN[0][0] = 0;
+	minN[0] = 0;
 
 	for (int i = 1; i <= n; ++i)
 	{
-		minN[i][0] = 0;
-		for (int j = 1; j <= L; ++j) {
-			if (cordeles[i - 1] > j)
-				minN[i][j] = minN[i - 1][j];
-			else
-				minN[i][j] = min(minN[i - 1][j], minN[i - 1][j - cordeles[i - 1]] + 1);
+		for (int j = L; j >= cordeles[i-1]; --j) {
+			minN[j] = min(minN[j], minN[j - cordeles[i - 1]] + 1);
 		}
 
 	}
-	return minN[n][L];
+	return minN[L];
 }
 
 EntInf minCost(vector<int> const& cordeles, vector<int> const& precio, int L)
 {
 	int n = cordeles.size();
-	Matriz<EntInf> minN(n + 1, L + 1, Infinito);
+	vector<EntInf> minN(L + 1, Infinito);
 
-	minN[0][0] = 0;
+	minN[0] = 0;
 
 	for (int i = 1; i <= n; ++i)
 	{
-		minN[i][0] = 0;
-		for (int j = 1; j <= L; ++j) {
-			if (cordeles[i - 1] > j)
-				minN[i][j] = minN[i - 1][j];
-			else
-				minN[i][j] = min(minN[i - 1][j], minN[i - 1][j - cordeles[i - 1]] + precio[i - 1]);
+		for (int j = L; j >= cordeles[i-1]; --j) {
+			minN[j] = min(minN[j], minN[j - cordeles[i - 1]] + precio[i - 1]);
 		}
 
 	}
-	return minN[n][L];
+	return minN[L];
 }
 
 
@@ -124,7 +112,7 @@ void resuelveCaso() {
 		precio.push_back(p);
 	}
 
-	int form = formas(cordeles, L);
+	long long form = formas(cordeles, L);
 	if (form > 0) {
 
 		EntInf minN = minNum(cordeles, L);
