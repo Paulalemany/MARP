@@ -8,4 +8,5 @@
   <Project Path="11.3/11.3.vcxproj" Id="6d1083c9-6193-4fd5-b2fd-8c53ef01744a" />
   <Project Path="11.4/11.4.vcxproj" Id="1590e678-a3b9-45ec-a3a5-13902b8aa49e" />
   <Project Path="11.5/11.5.vcxproj" Id="b1dfbb5b-5f44-4aa7-a9b4-bf0281b64ab7" />
+  <Project Path="11.L/11.L.vcxproj" Id="a05747b1-3ee1-447c-839d-cb1e24773285" />
 </Solution>
